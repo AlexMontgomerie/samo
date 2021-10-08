@@ -20,14 +20,24 @@ class MaxPool:
         return int(math.floor((self.rows-self.kernel_size+2*self.pad)/self.stride)+1)
 
     @property
-    def rows_out(self):
+    def cols_out(self):
         return int(math.floor((self.cols-self.kernel_size+2*self.pad)/self.stride)+1)
 
-    def latency_in(self):
-        return self.rows*self.cols*self.channels/self.streams_in
+    @property
+    def channels_out(self):
+        return self.channels
 
-    def latency_out(self):
-        return self.rows_out*self.cols_out*self.channels/self.streams_out
+    def latency_in(self, eval=False):
+        if eval:
+            return self.rows*self.cols*self.channels/self.streams_in.value[0]
+        else:
+            return self.rows*self.cols*self.channels/self.streams_in
+
+    def latency_out(self, eval=False):
+        if eval:
+            return self.rows_out*self.cols_out*self.channels/self.streams_out.value[0]
+        else:
+            return self.rows_out*self.cols_out*self.channels/self.streams_out
 
     def resource(self):
         return {

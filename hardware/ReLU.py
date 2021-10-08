@@ -12,11 +12,21 @@ class ReLU:
     streams_in: GKVariable = None
     streams_out: GKVariable = None
 
-    def latency_in(self):
-        return self.rows*self.cols*self.channels/self.streams_in
+    @property
+    def channels_out(self):
+        return self.channels
 
-    def latency_out(self):
-        return self.rows*self.cols*self.channels/self.streams_out
+    def latency_in(self, eval=False):
+        if eval:
+            return self.rows*self.cols*self.channels/self.streams_in.value[0]
+        else:
+            return self.rows*self.cols*self.channels/self.streams_in
+
+    def latency_out(self, eval=False):
+        if eval:
+            return self.rows*self.cols*self.channels/self.streams_out.value[0]
+        else:
+            return self.rows*self.cols*self.channels/self.streams_out
 
     def resource(self):
         return {

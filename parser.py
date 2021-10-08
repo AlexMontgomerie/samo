@@ -101,7 +101,7 @@ def add_hardware(model, graph):
             attr.setdefault("dilations", [1,1])
             # create convolution layer hardware
             graph.nodes[name]['hw'] = Convolution(0, 0, 0, filters,
-                    attr["kernel_shape"], attr["strides"], attr["group"], attr["pads"])
+                    attr["kernel_shape"][0], attr["strides"][0], attr["group"], attr["pads"][0])
             continue
         # InnerProduct Layer
         if graph.nodes[name]['type'] == "Gemm":
@@ -122,7 +122,7 @@ def add_hardware(model, graph):
             attr.setdefault("dilations", [1,1])
             # create pooling layer hardware
             graph.nodes[name]['hw'] = MaxPool(0, 0, 0,
-                    attr["kernel_shape"], attr["strides"], attr["pads"])
+                    attr["kernel_shape"][0], attr["strides"][0], attr["pads"][0])
             continue
         if graph.nodes[name]['type'] == "Relu":
             # create relu layer hardware
