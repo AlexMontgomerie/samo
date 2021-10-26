@@ -21,12 +21,13 @@ def optimise(network, platform):
     model.options.SOLVER = 1
 
     # create all the stream in and out variables
-    streams_in = [
-        model.Var(1, lb=1, ub=network.nodes[layer]["hw"].channels, fixed_initial=False, integer=True) for
-            layer in network ]
-    streams_out = [
-        model.Var(1, lb=1, ub=network.nodes[layer]["hw"].channels_out, fixed_initial=False, integer=True) for
-            layer in network ]
+    streams_in = [ model.Var(1, lb=1, ub=network.nodes[layer]["hw"].channels,
+        fixed_initial=False, integer=True) for layer in network ]
+    streams_out = [ model.Var(1, lb=1, ub=network.nodes[layer]["hw"].channels_out,
+        fixed_initial=False, integer=True) for layer in network ]
+
+    # streams_in = [ model.sos1(get_factors(network.nodes[layer]["hw"].channels)) for layer in network ]
+    # streams_out = [ model.sos1(get_factors(network.nodes[layer]["hw"].channels_out)) for layer in network ]
 
     # update the parsed network with these stream variables
     for index, layer in enumerate(network):
@@ -63,7 +64,7 @@ def optimise(network, platform):
     for step in range(len(streams_in)+len(streams_out)):
 
         # solve the model
-        model.solve(disp=True)
+        model.solve(disp=False)
 
         latency = eval_latency(network)
 
@@ -127,6 +128,15 @@ def optimise(network, platform):
 
         if total_invalid_streams == 0:
             break
+
+    # assign just the value to each streams
+    for index, layer in enumerate(network):
+        network.nodes[layer]["hw"].streams_in  = streams_in[index].value[0]
+        network.nodes[layer]["hw"].streams_out = streams_out[index].value[0]
+
+    # get the resource usage
+    dsp_usage = sum([ network.nodes[layer]["hw"].resource()["DSP"] for layer in network ])
+    print("DSP: ", dsp_usage)
 
 
 
