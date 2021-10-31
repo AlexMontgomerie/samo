@@ -15,6 +15,13 @@ def eval_resource(network):
         "FF"    : sum([ layer.resource()["FF"]   for layer in network])
     }
 
+def network_update(network, config):
+    for index, layer in enumerate(network):
+        layer.channel_in_folding    = config[index][0]
+        layer.channel_out_folding   = config[index][1]
+        layer.kernel_folding        = config[index][2]
+        layer.custom_update()
+
 def optimise(network, platform):
 
     # get all the configurations
@@ -27,15 +34,11 @@ def optimise(network, platform):
     configurations = list(itertools.product(*configurations))
 
     # track all valid networks
-    valid_networks = {}
-
+    valid_configs = {}
     # iterate over all the configurations
-    for config in configurations:
+    for i, config in enumerate(configurations):
         # update the network
-        for index, layer in enumerate(network):
-            layer.channel_in_folding    = config[index][0]
-            layer.channel_out_folding   = config[index][1]
-            layer.kernel_folding        = config[index][2]
+        network_update(network, config)
         # evaluate the latency
         latency  = eval_latency(network)
         resource = eval_resource(network)
@@ -46,11 +49,12 @@ def optimise(network, platform):
         within_dsp  = resource["DSP"]  <= platform["DSP"]
         # if network is within constraints, log the network and it's latency
         if within_bram and within_ff and within_lut and within_dsp:
-            valid_networks[copy.copy(network)] = latency
-
+            valid_configs[config] = latency
     # find the network with the lowest latency
-    best_network = min(valid_networks, key=valid_networks.get)
+    best_config = min(valid_configs, key=valid_configs.get)
+    print(best_config)
+    network_update(network, best_config)
 
     # return the best network
-    return best_network
+    return network
 
