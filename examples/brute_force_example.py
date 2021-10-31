@@ -1,7 +1,6 @@
 import types
 
-import optimiser
-import optimiser.brute
+from optimiser.brute import BruteForce
 from optimiser import Node
 
 import networkx as nx
@@ -40,5 +39,10 @@ if __name__ == "__main__":
         "BRAM" : 0,
         "FF" : 0
     }
+
     # perform optimisation on the computation graph
-    graph = optimiser.brute.optimise(graph, platform)
+    opt = BruteForce(graph, platform)
+    opt.optimise()
+
+    # save the configuration
+
