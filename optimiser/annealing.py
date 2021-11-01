@@ -15,6 +15,10 @@ class SimulatedAnnealing(Optimiser):
     iterations: int = 100
     valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
+    def update(self):
+        for index, layer in enumerate(self.network):
+            layer.update()
+
     def random_transformation(self):
         # pick a random layer
         layer = random.choices(list(self.network.nodes()))[0]
@@ -42,6 +46,9 @@ class SimulatedAnnealing(Optimiser):
             # perform a number of permutations of this network
             for _ in range(self.iterations):
                 self.random_transformation()
+
+            # update the network
+            self.update()
 
             # perform the annealing descision
             if math.exp(min(0,(latency - self.eval_latency())/(self.k*self.T))) < random.uniform(0,1):

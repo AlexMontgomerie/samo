@@ -32,7 +32,10 @@ class Node:
     def valid_kernel_folding(self):
         return get_factors(self.kernel_size*self.kernel_size)
 
-    def latency_in(self):
+    def custom_update(self):
+        pass
+
+    def latency_in(self, eval=False):
         return 1
 
     def latency_out(self, eval=False):

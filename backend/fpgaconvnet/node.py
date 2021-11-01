@@ -21,9 +21,9 @@ class FPGAConvNetWrapper(Node):
             self.kernel_size = layer.kernel_size
 
     def update(self):
-        self.layer.coarse_in = self.channels_in // self.channels_in_folding
-        self.layer.coarse_out = self.channels_out // self.channels_out_folding
-        self.layer.fine = (self.kernel_size*self.kernel_size) // self.kernel_folding
+        self.layer.coarse_in = self.channel_in_folding
+        self.layer.coarse_out = self.channel_out_folding
+        self.layer.fine = self.kernel_folding
 
     def latency_in(self):
         return self.layer.latency_in()

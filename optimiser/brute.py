@@ -8,6 +8,13 @@ from .optimiser import Optimiser
 @dataclass
 class BruteForce(Optimiser):
 
+    def update(self, config):
+        for index, layer in enumerate(self.network):
+            layer.channel_in_folding    = config[index][0]
+            layer.channel_out_folding   = config[index][1]
+            layer.kernel_folding        = config[index][2]
+            layer.update()
+
     def optimise(self):
 
         # get all the configurations
@@ -20,24 +27,21 @@ class BruteForce(Optimiser):
         configurations = list(itertools.product(*configurations))
 
         # track all valid networks
-        valid_networks = {}
+        valid_configs = {}
 
         # iterate over all the configurations
         for config in configurations:
             # update the network
-            for index, layer in enumerate(self.network):
-                layer.channel_in_folding    = config[index][0]
-                layer.channel_out_folding   = config[index][1]
-                layer.kernel_folding        = config[index][2]
+            self.update(config)
             # evaluate the latency
             latency  = self.eval_latency()
             # if network is within constraints, log the network and it's latency
             if self.check_resource_constraints():
-                valid_networks[copy.copy(self.network)] = latency
+                valid_configs[config] = latency
 
         # find the network with the lowest latency
-        best_network = min(valid_networks, key=valid_networks.get)
+        best_config = min(valid_configs, key=valid_configs.get)
 
-        # return the best network
-        return best_network
+        # update with the best configuration
+        self.update(best_config)
 
