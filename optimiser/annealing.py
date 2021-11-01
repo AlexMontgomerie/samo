@@ -1,7 +1,7 @@
 import math
 import copy
 import random
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 import numpy as np
 
 from .optimiser import Optimiser
@@ -13,20 +13,20 @@ class SimulatedAnnealing(Optimiser):
     T_min: float = 0.001
     cool: float = 0.98
     iterations: int = 100
-    valid_variables: list = ["channel_in_folding", "channel_out_folding", "kernel_folding"]
+    valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
     def random_transformation(self):
         # pick a random layer
-        layer = random.choices(self.network.nodes)
+        layer = random.choices(list(self.network.nodes()))[0]
         # pick a random variable
-        variable = random.choices(self.valid_variables)
+        variable = random.choices(self.valid_variables)[0]
         # apply a random value to that variable (within constraints)
         if variable == "channel_in_folding":
-            layer.channel_in_folding = random.choices(layer.valid_channel_in_folding())
+            layer.channel_in_folding = random.choices(layer.valid_channel_in_folding)[0]
         elif variable == "channel_out_folding":
-            layer.channel_out_folding = random.choices(layer.valid_channel_out_folding())
+            layer.channel_out_folding = random.choices(layer.valid_channel_out_folding)[0]
         elif variable == "kernel_folding":
-            layer.kernel_folding = random.choices(layer.valid_kernel_folding())
+            layer.kernel_folding = random.choices(layer.valid_kernel_folding)[0]
 
     def optimise(self):
 

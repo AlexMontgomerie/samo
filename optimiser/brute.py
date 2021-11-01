@@ -31,14 +31,8 @@ class BruteForce(Optimiser):
                 layer.kernel_folding        = config[index][2]
             # evaluate the latency
             latency  = self.eval_latency()
-            resource = self.eval_resource()
-            # check constraints
-            within_bram = resource["BRAM"] <= self.platform["BRAM"]
-            within_ff   = resource["FF"]   <= self.platform["FF"]
-            within_lut  = resource["LUT"]  <= self.platform["LUT"]
-            within_dsp  = resource["DSP"]  <= self.platform["DSP"]
             # if network is within constraints, log the network and it's latency
-            if within_bram and within_ff and within_lut and within_dsp:
+            if self.check_resource_constraints():
                 valid_networks[copy.copy(self.network)] = latency
 
         # find the network with the lowest latency

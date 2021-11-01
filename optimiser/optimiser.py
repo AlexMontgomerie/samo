@@ -19,6 +19,19 @@ class Optimiser:
             "FF"    : sum([ layer.resource()["FF"]   for layer in self.network])
         }
 
+    def check_resource_constraints(self):
+        # get the current resource usage
+        resource = self.eval_resource()
+        # check within the platform constraints
+        within_bram = resource["BRAM"] <= self.platform["BRAM"]
+        within_ff   = resource["FF"]   <= self.platform["FF"]
+        within_lut  = resource["LUT"]  <= self.platform["LUT"]
+        within_dsp  = resource["DSP"]  <= self.platform["DSP"]
+        # if network is within constraints, return true
+        if within_bram and within_ff and within_lut and within_dsp:
+            return True
+        return False
+
     def optimise(self):
         pass
 
