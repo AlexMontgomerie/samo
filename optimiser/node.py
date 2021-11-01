@@ -11,9 +11,9 @@ class Node:
     channels_in: int
     channels_out: int
     kernel_size: int = 1
-    channel_in_folding = 1
-    channel_out_folding = 1
-    kernel_folding = 1
+    channel_in_folding: int = 1
+    channel_out_folding: int = 1
+    kernel_folding: int = 1
 
     def __hash__(self):
         return hash(repr(self))
