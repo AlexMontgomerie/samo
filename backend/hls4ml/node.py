@@ -8,14 +8,14 @@ class HLS4MLWrapper(Node):
     def __init__(self, layer: Layer):
         self.layer = layer
 
-        self.channels_in    = layer.get_input_variable().dim_names[-1]
-        self.channels_out   = layer.get_output_variable().dim_names[-1]
+        self.channels_in    = layer.get_input_variable().shape[-1]
+        self.channels_out   = layer.get_output_variable().shape[-1]
 
     def latency_in(self):
-        return np.prod(layer.get_input_variable().dim_names) // self.channel_in_folding
+        return np.prod(self.layer.get_input_variable().shape) // self.channel_in_folding
 
     def latency_out(self):
-        return np.prod(layer.get_output_variable().dim_names) // self.channel_out_folding
+        return np.prod(self.layer.get_output_variable().shape) // self.channel_out_folding
 
     def resource(self):
         return {
