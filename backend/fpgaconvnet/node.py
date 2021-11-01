@@ -1,15 +1,23 @@
-from fpgaconvnet_optimiser.models.layers import Layer, Convolution
+import uuid
+
+from fpgaconvnet_optimiser.models.layers import Layer, ConvolutionLayer
 from optimiser import Node
 
 class FPGAConvNetWrapper(Node):
 
     def __init__(self, layer: Layer):
+
+        self.node_id = str(uuid.uuid4()) # hack to get it to recognise the node as unique
+
+        # store the fpgaconvnet layer
         self.layer = layer
 
-        self.channels_in    = layer.channels_in
-        self.channels_out   = layer.channels_out
+        # get the channels in and out for the layer
+        self.channels_in    = layer.channels_in()
+        self.channels_out   = layer.channels_out()
 
-        if type(layer) == Convolution:
+        # add the kernel size if it's a convolution layer
+        if type(layer) == ConvolutionLayer:
             self.kernel_size = layer.kernel_size
 
     def update(self):
