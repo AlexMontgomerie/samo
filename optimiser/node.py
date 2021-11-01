@@ -1,4 +1,3 @@
-import uuid
 import math
 from functools import reduce
 from dataclasses import dataclass, field
@@ -15,7 +14,6 @@ class Node:
     channel_in_folding: int = 1
     channel_out_folding: int = 1
     kernel_folding: int = 1
-    node_id: str = field(default_factory=lambda: str(uuid.uuid4()))
 
     def __hash__(self):
         return hash(repr(self))
