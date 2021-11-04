@@ -8,11 +8,29 @@ import networkx as nx
 
 def parse(filepath):
 
-    # load keras model
-    model = keras.models.load_model(filepath)
+    # create a configuration file
+    config = {
+        "OnnxModel" : filepath,
+        "OutputDir" : "outputs/hls4ml",
+        "ProjectName" : "hls4ml_optimiser",
+        "XilinxPart" : "xcku115-flvb2104-2-i",
+        "ClockPeriod" : 5,
+        "IOType" : "io_stream",
+        "HLSConfig" : {
+            "Model" : {
+                "Precision" : "ap_fixed<16,6>",
+                "ReuseFactor" : 1
+            }
+        }
+    }
 
-    # parse the network
-    hls_model = hls4ml.converters.convert_from_keras_model(model)
+    hls_model = hls4ml.converters.convert_from_config(config)
+
+    # # load keras model
+    # model = keras.models.load_model(filepath)
+
+    # # parse the network
+    # hls_model = hls4ml.converters.convert_from_keras_model(model)
 
     # convert into the node wrappers
     network = nx.DiGraph()

@@ -25,9 +25,9 @@ if __name__ == "__main__":
     # create the computation graph
     graph = nx.DiGraph()
     ## add nodes
-    graph.add_node(ExampleNode(10,64))
-    graph.add_node(ExampleNode(64,32))
-    graph.add_node(ExampleNode(32,16))
+    graph.add_node("1", hw=ExampleNode(10,64))
+    graph.add_node("2", hw=ExampleNode(64,32))
+    graph.add_node("3", hw=ExampleNode(32,16))
     ## add edges
     graph.add_edge(list(graph.nodes)[0], list(graph.nodes)[1])
     graph.add_edge(list(graph.nodes)[1], list(graph.nodes)[2])

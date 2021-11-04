@@ -10,10 +10,10 @@ class BruteForce(Optimiser):
 
     def update(self, config):
         for index, layer in enumerate(self.network):
-            layer.channel_in_folding    = config[index][0]
-            layer.channel_out_folding   = config[index][1]
-            layer.kernel_folding        = config[index][2]
-            layer.update()
+            self.network.nodes[layer]["hw"].channel_in_folding    = config[index][0]
+            self.network.nodes[layer]["hw"].channel_out_folding   = config[index][1]
+            self.network.nodes[layer]["hw"].kernel_folding        = config[index][2]
+            self.network.nodes[layer]["hw"].update()
 
     def optimise(self):
 
@@ -21,9 +21,9 @@ class BruteForce(Optimiser):
         configurations = []
         for layer in self.network:
             configurations.append(list(itertools.product(
-                layer.valid_channel_in_folding,
-                layer.valid_channel_out_folding,
-                layer.valid_kernel_folding)))
+                self.network.nodes[layer]["hw"].valid_channel_in_folding,
+                self.network.nodes[layer]["hw"].valid_channel_out_folding,
+                self.network.nodes[layer]["hw"].valid_kernel_folding)))
         configurations = list(itertools.product(*configurations))
 
         # track all valid networks

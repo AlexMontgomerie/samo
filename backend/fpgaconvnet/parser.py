@@ -12,7 +12,7 @@ def parse(filepath):
     network = nx.DiGraph()
     for node in graph.nodes:
         new_node = FPGAConvNetWrapper(graph.nodes[node]["hw"])
-        network.add_node(new_node)
+        network.add_node(node, hw=new_node)
 
     # return the wrapped network
     return network

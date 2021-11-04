@@ -17,11 +17,12 @@ class SimulatedAnnealing(Optimiser):
 
     def update(self):
         for index, layer in enumerate(self.network):
-            layer.update()
+            self.network.nodes[layer]["hw"].update()
 
     def random_transformation(self):
         # pick a random layer
         layer = random.choices(list(self.network.nodes()))[0]
+        layer = self.network.nodes[layer]["hw"]
         # pick a random variable
         variable = random.choices(self.valid_variables)[0]
         # apply a random value to that variable (within constraints)
@@ -55,7 +56,7 @@ class SimulatedAnnealing(Optimiser):
                 self.network = network_copy
 
             # check the network is within platform resource constraints
-            if not self.check_resource_constraints():
+            if not self.check_constraints():
                 self.network = network_copy
 
             # reduce temperature
