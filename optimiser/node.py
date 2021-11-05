@@ -14,6 +14,7 @@ class Node:
     channel_in_folding: int = 1
     channel_out_folding: int = 1
     kernel_folding: int = 1
+    constraints: dict = field(default_factory=lambda: {"matching_folding": True})
 
     def __hash__(self):
         return hash(repr(self))
@@ -29,6 +30,19 @@ class Node:
     @property
     def valid_kernel_folding(self):
         return get_factors(self.kernel_size*self.kernel_size)
+
+    def check_matching_folding(self):
+        return self.channel_in_folding == self.channel_out_folding
+
+    def check_constraints(self):
+        # check all the constraints
+        constraints = []
+        constraints += [self.check_matching_folding if self.constraints["matching_folding"] else True]
+        constraints += [self.channel_in_folding in self.valid_channel_in_folding]
+        constraints += [self.channel_out_folding in self.valid_channel_out_folding]
+        constraints += [self.kernel_folding in self.valid_kernel_folding]
+        # ensure all constraints are held
+        return reduce(lambda a, b: a and b, constraints)
 
     def update(self):
         pass

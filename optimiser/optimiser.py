@@ -1,4 +1,5 @@
 from dataclasses import dataclass, field
+from functools import reduce
 import networkx as nx
 
 @dataclass
@@ -24,14 +25,13 @@ class Optimiser:
         # get the current resource usage
         resource = self.eval_resource()
         # check within the platform constraints
-        within_bram = resource["BRAM"] <= self.platform["BRAM"]
-        within_ff   = resource["FF"]   <= self.platform["FF"]
-        within_lut  = resource["LUT"]  <= self.platform["LUT"]
-        within_dsp  = resource["DSP"]  <= self.platform["DSP"]
+        rsc_constraints = []
+        rsc_constraints += [resource["BRAM"] <= self.platform["BRAM"]]
+        rsc_constraints += [resource["FF"]   <= self.platform["FF"]]
+        rsc_constraints += [resource["LUT"]  <= self.platform["LUT"]]
+        rsc_constraints += [resource["DSP"]  <= self.platform["DSP"]]
         # if network is within constraints, return true
-        if within_bram and within_ff and within_lut and within_dsp:
-            return True
-        return False
+        return reduce(lambda a, b: a and b, rsc_constraints)
 
     def check_inter_layer_matching_folding(self):
         # iterate over the nodes in the network
@@ -49,12 +49,13 @@ class Optimiser:
 
     def check_constraints(self):
         # check all the constraints (if they are required)
-        resources = self.check_resource_constraints() if self.constraints["resource"] else True
-        inter_layer_matching = self.check_inter_layer_matching_folding() if self.constraints["inter_layer_matching"] else True
+        constraints = []
+        constraints += [self.check_resource_constraints() if self.constraints["resource"] else True]
+        constraints += [self.check_inter_layer_matching_folding() if self.constraints["inter_layer_matching"] else True]
+        for node in self.network.nodes:
+            constraints += [self.network.nodes[node]["hw"].check_constraints()]
         # ensure it's within all constraints
-        if resources and inter_layer_matching:
-            return True
-        return False
+        return reduce(lambda a, b: a and b, constraints)
 
     def optimise(self):
         pass

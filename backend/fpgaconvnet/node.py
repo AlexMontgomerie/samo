@@ -1,13 +1,9 @@
-import uuid
-
-from fpgaconvnet_optimiser.models.layers import Layer, ConvolutionLayer
+from fpgaconvnet_optimiser.models.layers import Layer, ConvolutionLayer, InnerProductLayer
 from optimiser import Node
 
 class FPGAConvNetWrapper(Node):
 
     def __init__(self, layer: Layer):
-
-        self.node_id = str(uuid.uuid4()) # hack to get it to recognise the node as unique
 
         # store the fpgaconvnet layer
         self.layer = layer
@@ -19,6 +15,9 @@ class FPGAConvNetWrapper(Node):
         # add the kernel size if it's a convolution layer
         if type(layer) == ConvolutionLayer:
             self.kernel_size = layer.kernel_size
+
+        # set the matching folding constraint
+        self.constraints = { "matching_folding" : type(layer) not in [ConvolutionLayer, InnerProductLayer] }
 
     def update(self):
         self.layer.coarse_in = self.channel_in_folding

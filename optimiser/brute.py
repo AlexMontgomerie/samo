@@ -36,7 +36,7 @@ class BruteForce(Optimiser):
             # evaluate the latency
             latency  = self.eval_latency()
             # if network is within constraints, log the network and it's latency
-            if self.check_resource_constraints():
+            if self.check_constraints():
                 valid_configs[config] = latency
 
         # find the network with the lowest latency
