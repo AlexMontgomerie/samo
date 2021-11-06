@@ -1,3 +1,3 @@
 from .node import Node
-from .optimiser import Optimiser
+from .network import Network
 from .brute import BruteForce

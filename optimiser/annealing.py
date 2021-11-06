@@ -4,10 +4,11 @@ import random
 from dataclasses import dataclass, field
 import numpy as np
 
-from .optimiser import Optimiser
+from .network import Network
 
 @dataclass
-class SimulatedAnnealing(Optimiser):
+class SimulatedAnnealing:
+    network: Network
     T: float = 10.0
     k: float = 100.0
     T_min: float = 0.001
@@ -39,7 +40,7 @@ class SimulatedAnnealing(Optimiser):
         while self.T_min < self.T:
 
             # get the throughput of the current network state
-            latency = self.eval_latency()
+            latency = self.network.eval_latency()
 
             # keep a copy of the current network state
             network_copy = copy.deepcopy(self.network)
@@ -52,11 +53,11 @@ class SimulatedAnnealing(Optimiser):
             self.update()
 
             # perform the annealing descision
-            if math.exp(min(0,(latency - self.eval_latency())/(self.k*self.T))) < random.uniform(0,1):
+            if math.exp(min(0,(latency - self.network.eval_latency())/(self.k*self.T))) < random.uniform(0,1):
                 self.network = network_copy
 
             # check the network is within platform resource constraints
-            if not self.check_constraints():
+            if not self.network.check_constraints():
                 self.network = network_copy
 
             # reduce temperature

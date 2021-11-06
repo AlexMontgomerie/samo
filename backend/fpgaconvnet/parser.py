@@ -1,7 +1,6 @@
 import fpgaconvnet_optimiser.tools.parser as parser
 from .node import FPGAConvNetWrapper
-
-import networkx as nx
+from optimiser import Network
 
 def parse(filepath):
 
@@ -9,7 +8,7 @@ def parse(filepath):
     _, graph = parser.parse_net(filepath)
 
     # convert into the node wrappers
-    network = nx.DiGraph()
+    network = Network()
     for node in graph.nodes:
         new_node = FPGAConvNetWrapper(graph.nodes[node]["hw"])
         network.add_node(node, hw=new_node)
