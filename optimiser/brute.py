@@ -3,10 +3,10 @@ import copy
 from dataclasses import dataclass
 import numpy as np
 
-from .optimiser import Optimiser
+from .network import Network
 
 @dataclass
-class BruteForce(Optimiser):
+class BruteForce(Network):
 
     def update(self, config):
         for index, layer in enumerate(self.network):
@@ -43,7 +43,7 @@ class BruteForce(Optimiser):
             # evaluate the latency
             latency  = self.eval_latency()
             # if network is within constraints, log the network and it's latency
-            if self.check_resource_constraints():
+            if self.check_constraints():
                 valid_configs[config] = latency
 
         # find the network with the lowest latency

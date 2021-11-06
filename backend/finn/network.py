@@ -1,18 +1,18 @@
-from networkx import DiGraph
+from optimiser import Network
 
-class FinnNetworkWrapper(DiGraph):
-    def __init__(self):
-        super().__init__()
+class FinnNetworkWrapper(Network):
 
     def validate(self):
-        for i, n in enumerate(self.nodes):
-            if n.finn_node.onnx_node.op_type == "StreamingFCLayer_Batch":
-                prev = list(self.nodes)[i-1]
-                if prev.finn_node.onnx_node.op_type != "StreamingFCLayer_Batch":
-                    if prev.channel_out_folding != n.channel_in_folding:
+        # iterate over nodes in the network
+        for node in self.nodes:
+            # if the layer is fully connected layer, make sure only the previous folding matches
+            if self.nodes[node]["hw"].finn_node.onnx_node.op_type == "StreamingFCLayer_Batch":
+                # get the previous node
+                prev_node = list(self.predecessors(node))[0]
+                if self.nodes[prev_node]["hw"].finn_node.onnx_node.op_type != "StreamingFCLayer_Batch":
+                    if self.nodes[prev_node]["hw"].channel_out_folding != self.nodes[node]["hw"].channel_in_folding:
                         return False
-            else:
-                if n.channel_in_folding != n.channel_out_folding:
-                    return False
-
         return True
+
+    def check_constraints(self):
+        return Network.check_constraints(self) and self.validate()
