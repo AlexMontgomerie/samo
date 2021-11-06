@@ -7,9 +7,7 @@ class Network(nx.DiGraph):
     constraints: dict = {"resource" : True, "inter_layer_matching" : True}
 
     def eval_latency(self):
-        max_latency_in  = max([ self.nodes[layer]["hw"].latency_in() for layer in self.nodes])
-        max_latency_out = max([ self.nodes[layer]["hw"].latency_out() for layer in self.nodes])
-        return max(max_latency_in, max_latency_out)
+        return max([ self.nodes[layer]["hw"].latency() for layer in self.nodes])
 
     def eval_resource(self):
         return {
@@ -40,3 +38,10 @@ class Network(nx.DiGraph):
         # ensure it's within all constraints
         return reduce(lambda a, b: a and b, constraints)
 
+def load_from_opt_network(network, opt_network):
+    for i, opt_node in enumerate(opt_network.nodes()):
+        node = list(network.nodes())[i]
+        node.channel_in_folding = opt_node.channel_in_folding
+        node.channel_out_folding = opt_node.channel_out_folding
+        node.kernel_folding = opt_node.kernel_folding
+        node.update()

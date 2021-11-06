@@ -24,11 +24,8 @@ class FPGAConvNetWrapper(Node):
         self.layer.coarse_out = self.channel_out_folding
         self.layer.fine = self.kernel_folding
 
-    def latency_in(self):
-        return self.layer.latency_in()
-
-    def latency_out(self):
-        return self.layer.latency_out()
+    def latency(self):
+        return self.layer.latency()
 
     def resource(self):
         return self.layer.resource()

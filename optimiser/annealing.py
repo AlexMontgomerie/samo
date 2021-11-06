@@ -59,6 +59,7 @@ class SimulatedAnnealing:
             # check the network is within platform resource constraints
             if not self.network.check_constraints():
                 self.network = network_copy
+                continue
 
             # reduce temperature
             self.T *= self.cool
