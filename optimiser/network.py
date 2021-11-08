@@ -1,5 +1,6 @@
 from dataclasses import dataclass, field
 from functools import reduce
+from tabulate import tabulate
 import networkx as nx
 
 class Network(nx.DiGraph):
@@ -38,6 +39,32 @@ class Network(nx.DiGraph):
         # ensure it's within all constraints
         return reduce(lambda a, b: a and b, constraints)
 
+    def summary(self):
+        # get a summary for the whole network
+        latency = self.eval_latency()
+        resources = self.eval_resource()
+        network_summary = tabulate([[
+            int(latency),
+            f"{resources['DSP']} / {self.platform['DSP']}",
+            f"{resources['BRAM']} / {self.platform['BRAM']}",
+            f"{resources['LUT']} / {self.platform['LUT']}",
+            f"{resources['FF']} / {self.platform['FF']}"
+        ]], headers=["Latency (cycles)", "DSP", "BRAM", "LUT", "FF"])
+        # get a summary for each layer
+        layer_summary = []
+        for node in self.nodes:
+            layer = self.nodes[node]["hw"]
+            layer_summary.append(
+                [ node, int(layer.latency()), layer.resource()["DSP"],
+                    layer.resource()["BRAM"], layer.resource()["LUT"], layer.resource()["FF"]] )
+        layer_summary = tabulate(layer_summary, headers=["Layer", "Latency (cycles)", "DSP", "BRAM", "LUT", "FF"])
+
+        # print the summary
+        print("Network Summary:\n----------------\n")
+        print(layer_summary)
+        print("\n")
+        print(network_summary)
+
 def load_from_opt_network(network, opt_network):
     for i, opt_node in enumerate(opt_network.nodes()):
         node = list(network.nodes())[i]
@@ -45,3 +72,4 @@ def load_from_opt_network(network, opt_network):
         node.channel_out_folding = opt_node.channel_out_folding
         node.kernel_folding = opt_node.kernel_folding
         node.update()
+

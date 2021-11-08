@@ -47,10 +47,7 @@ class Node:
     def update(self):
         pass
 
-    def latency_in(self):
-        return 1
-
-    def latency_out(self):
+    def latency(self):
         return 1
 
     def resource(self):

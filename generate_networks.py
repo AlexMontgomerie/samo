@@ -17,9 +17,6 @@ tfc = keras.Sequential(
     ], name="tfc"
 )
 
-# print a model summary
-tfc.summary()
-
 # save the model
 tfc.save("models/tfc.keras")
 onnx.save(onnxmltools.convert_keras(tfc, target_opset=9), "models/tfc.onnx")
@@ -45,9 +42,6 @@ cnv = keras.Sequential(
     ], name="cnv"
 )
 
-# print a model summary
-cnv.summary()
-
 # save the model
 cnv.save("models/cnv.keras")
 onnx.save(onnxmltools.convert_keras(cnv, target_opset=9), "models/cnv.onnx")
@@ -68,9 +62,6 @@ lenet = keras.Sequential(
     ], name="lenet"
 )
 
-# print a model summary
-lenet.summary()
-
 # save the model
 lenet.save("models/lenet.keras")
 onnx.save(onnxmltools.convert_keras(lenet, target_opset=9), "models/lenet.onnx")
@@ -87,9 +78,6 @@ simple = keras.Sequential(
         layers.Dense(5, name="ip4")
     ], name="simple"
 )
-
-# print a model summary
-simple.summary()
 
 # save the model
 simple.save("models/simple.keras")
