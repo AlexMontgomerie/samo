@@ -14,6 +14,8 @@ def main():
             help="target backend for accelerating the model")
     parser.add_argument("-p", "--platform", metavar="PATH", required=True,
             help="hardware platform details (.json)")
+    parser.add_argument("-o", "--output-path", metavar="PATH", required=True,
+            help="output path for the optimised model (.json, .onnx)")
     args = parser.parse_args()
 
     # get the correct backend parser
@@ -33,9 +35,16 @@ def main():
     opt.network.platform = platform["resources"]
 
     # run the optimiser
-    opt.optimise()
+    # opt.optimise()
 
+    # print a summary of the run
     opt.network.summary()
+
+    # get the correct backend exporter
+    exporter = importlib.import_module(f"backend.{args.backend}.export")
+
+    # export the design
+    exporter.export(opt.network, args.model, args.output_path)
 
 if __name__ == "__main__":
     main()

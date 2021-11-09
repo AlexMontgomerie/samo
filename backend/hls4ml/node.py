@@ -13,17 +13,27 @@ class HLS4MLNodeWrapper(Node):
         self.channels_out   = layer.get_output_variable().shape[-1]
 
         # set the matching folding constraint
-        self.constraints = { "matching_folding" : type(layer) not in [Dense, Conv2D] }
+        self.constraints = { "matching_folding" : False }
+
+    def get_reuse_factor(self):
+        return int((self.channels_in*self.channels_out)/(self.channel_in_folding*self.channel_out_folding))
+
+    @property
+    def valid_channel_in_folding(self):
+        return list(np.arange(self.channels_in)+1)
+
+    @property
+    def valid_channel_out_folding(self):
+        return list(np.arange(self.channels_out)+1)
 
     def latency(self):
-        return max(
-                np.prod(self.layer.get_input_variable().shape) // self.channel_in_folding,
-                np.prod(self.layer.get_output_variable().shape) // self.channel_out_folding )
+        return self.get_reuse_factor() if type(self.layer) in [Dense, Conv2D] else 1
 
     def resource(self):
+        dsp = int(self.channels_in*self.channels_out/self.get_reuse_factor()) if type(self.layer) in [Dense, Conv2D] else 0
         return {
              "LUT" : 0,
-             "DSP" : self.channel_in_folding*self.channel_out_folding,
+             "DSP" : dsp,
              "BRAM" : 0,
              "FF" : 0
         }
