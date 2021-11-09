@@ -1,3 +1,4 @@
+import shutil
 import argparse
 import json
 
@@ -17,6 +18,9 @@ def main():
     parser.add_argument("-o", "--output-path", metavar="PATH", required=True,
             help="output path for HLS implementation")
     args = parser.parse_args()
+
+    # clean any existing project
+    shutil.rmtree(args.output_path, ignore_errors=True)
 
     # load the configuration
     with open(args.config_path, "r") as f:

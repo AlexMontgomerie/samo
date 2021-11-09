@@ -1,7 +1,17 @@
+import math
 import numpy as np
 
-from hls4ml.model.hls_layers import Layer, Dense, Conv2D
+from hls4ml.model.hls_layers import Layer, Dense, Conv2D, Conv1D
 from optimiser import Node
+
+def _check_conditions(n_in, n_out, rf):
+    # from https://github.com/fastmachinelearning/hls4ml/blob/7f75add50a5acd2a4335bde0ab98c9d4e79e1137/hls4ml/templates/vivado_template.py#L448
+    multfactor = min(n_in, rf)
+    multiplier_limit = int(math.ceil((n_in * n_out) / float(multfactor)))
+    _assert = (((multiplier_limit % n_out) == 0) or (rf >= n_in))
+    _assert = _assert and (((rf % n_in) == 0) or (rf < n_in))
+    _assert = _assert and (((n_in * n_out) % rf) == 0)
+    return _assert
 
 class HLS4MLNodeWrapper(Node):
 
@@ -12,28 +22,41 @@ class HLS4MLNodeWrapper(Node):
         self.channels_in    = layer.get_input_variable().shape[-1]
         self.channels_out   = layer.get_output_variable().shape[-1]
 
+        # get the kernel size
+        if type(layer) in [Conv1D, Conv2D]:
+            self.kernel_size = layer.get_attr("filt_width")
+
         # set the matching folding constraint
         self.constraints = { "matching_folding" : False }
 
+        # get all valid kernel folding
+        self._valid_kernel_folding = []
+        for rf in range(1, self.channels_in*self.channels_out*self.kernel_size*self.kernel_size+1):
+            if _check_conditions(self.channels_in*self.kernel_size*self.kernel_size, self.channels_out, rf):
+                self._valid_kernel_folding.append(rf)
+
     def get_reuse_factor(self):
-        return int((self.channels_in*self.channels_out)/(self.channel_in_folding*self.channel_out_folding))
+        return self.kernel_folding
 
-    # @property
-    # def valid_channel_in_folding(self):
-    #     return list(np.arange(self.channels_in)+1)
+    @property
+    def valid_channel_in_folding(self):
+        return [1]
 
-    # @property
-    # def valid_channel_out_folding(self):
-    #     return list(np.arange(self.channels_out)+1)
+    @property
+    def valid_channel_out_folding(self):
+        return [1]
+
+    @property
+    def valid_kernel_folding(self):
+        return self._valid_kernel_folding
 
     def latency(self):
-        return self.get_reuse_factor() if type(self.layer) in [Dense, Conv2D] else 1
+        return self.get_reuse_factor()
 
     def resource(self):
-        dsp = int(self.channels_in*self.channels_out/self.get_reuse_factor()) if type(self.layer) in [Dense, Conv2D] else 0
         return {
              "LUT" : 0,
-             "DSP" : dsp,
+             "DSP" : int(self.channels_in*self.channels_out*self.kernel_size*self.kernel_size/self.get_reuse_factor()),
              "BRAM" : 0,
              "FF" : 0
         }

@@ -35,7 +35,7 @@ def main():
     opt.network.platform = platform["resources"]
 
     # run the optimiser
-    # opt.optimise()
+    opt.optimise()
 
     # print a summary of the run
     opt.network.summary()
