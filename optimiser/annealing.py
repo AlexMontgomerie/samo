@@ -43,7 +43,7 @@ class SimulatedAnnealing:
             latency = self.network.eval_latency()
 
             # keep a copy of the current network state
-            network_copy = copy.deepcopy(self.network)
+            network_copy = copy.copy(self.network)
 
             # perform a number of permutations of this network
             for _ in range(self.iterations):
