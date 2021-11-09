@@ -18,13 +18,13 @@ class HLS4MLNodeWrapper(Node):
     def get_reuse_factor(self):
         return int((self.channels_in*self.channels_out)/(self.channel_in_folding*self.channel_out_folding))
 
-    @property
-    def valid_channel_in_folding(self):
-        return list(np.arange(self.channels_in)+1)
+    # @property
+    # def valid_channel_in_folding(self):
+    #     return list(np.arange(self.channels_in)+1)
 
-    @property
-    def valid_channel_out_folding(self):
-        return list(np.arange(self.channels_out)+1)
+    # @property
+    # def valid_channel_out_folding(self):
+    #     return list(np.arange(self.channels_out)+1)
 
     def latency(self):
         return self.get_reuse_factor() if type(self.layer) in [Dense, Conv2D] else 1
