@@ -1,9 +1,12 @@
+from finn.core.modelwrapper import ModelWrapper
 from finn.custom_op.registry import getCustomOp
 
 from .network import FinnNetworkWrapper
 from .node import FinnNodeWrapper
 
-def parse(model):
+def parse(filepath):
+    model = ModelWrapper(filepath)
+
     # create the computation graph
     network = FinnNetworkWrapper()
     ## add nodes
