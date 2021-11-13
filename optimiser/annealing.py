@@ -1,8 +1,10 @@
+import csv
 import math
 import copy
 import random
 from dataclasses import dataclass, field
 import numpy as np
+from tqdm import tqdm
 
 from .network import Network
 
@@ -11,8 +13,8 @@ class SimulatedAnnealing:
     network: Network
     T: float = 10.0
     k: float = 100.0
-    T_min: float = 0.001
-    cool: float = 0.98
+    T_min: float = 0.00001
+    cool: float = 0.995
     iterations: int = 100
     valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
@@ -36,14 +38,20 @@ class SimulatedAnnealing:
 
     def optimise(self):
 
+        def generator():
+            while self.T_min < self.T:
+                yield
+
+        log = []
+
         # keep iterating until we meet the minimum temperature
-        while self.T_min < self.T:
+        for _ in tqdm(generator(), desc="simulated annealing iterations"):
 
             # get the throughput of the current network state
             latency = self.network.eval_latency()
 
             # keep a copy of the current network state
-            network_copy = copy.copy(self.network)
+            network_copy = copy.deepcopy(self.network)
 
             # perform a number of permutations of this network
             for _ in range(self.iterations):
@@ -52,14 +60,36 @@ class SimulatedAnnealing:
             # update the network
             self.update()
 
-            # perform the annealing descision
-            if math.exp(min(0,(latency - self.network.eval_latency())/(self.k*self.T))) < random.uniform(0,1):
-                self.network = network_copy
-
             # check the network is within platform resource constraints
             if not self.network.check_constraints():
                 self.network = network_copy
                 continue
 
+            # log the current resources and latency
+            new_latency = self.network.eval_latency()
+            new_resource = self.network.eval_resource()
+            chosen = True
+
+            # perform the annealing descision
+            # print(math.exp(min(0,(latency - self.network.eval_latency())/(self.k*self.T))), latency-self.network.eval_latency(), self.T)
+            if math.exp(min(0,(latency - new_latency)/(self.k*self.T))) < random.uniform(0,1):
+                self.network = network_copy
+                chosen = False
+
             # reduce temperature
             self.T *= self.cool
+
+            # update the log
+            log += [[
+                    new_latency,
+                    new_resource["BRAM"],
+                    new_resource["DSP"],
+                    new_resource["LUT"],
+                    new_resource["FF"],
+                    chosen
+            ]]
+
+        # write log to a file
+        with open("outputs/log.csv", "w") as f:
+            writer = csv.writer(f)
+            [ writer.writerow(row) for row in log ]

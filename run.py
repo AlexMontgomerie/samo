@@ -16,6 +16,9 @@ def main():
             help="hardware platform details (.json)")
     parser.add_argument("-o", "--output-path", metavar="PATH", required=True,
             help="output path for the optimised model (.json, .onnx)")
+    parser.add_argument("--optimiser", choices=["brute", "annealing"], required=False, default="annealing",
+            help="optimiser to use")
+
     args = parser.parse_args()
 
     # get the correct backend parser
@@ -25,7 +28,12 @@ def main():
     graph = parser.parse(args.model)
 
     # create an optimiser instance for the network
-    opt = SimulatedAnnealing(graph)
+    if args.optimiser == "annealing":
+        opt = SimulatedAnnealing(graph)
+    elif args.optimiser == "brute":
+        opt = BruteForce(graph)
+    else:
+        raise NameError
 
     # parse the platform
     with open(args.platform, "r") as f:

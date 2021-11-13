@@ -32,12 +32,11 @@ class Network(nx.DiGraph):
 
     def check_constraints(self):
         # check all the constraints (if they are required)
-        constraints = []
-        constraints += [self.check_resource_constraints() if self.constraints["resource"] else True]
         for node in self.nodes:
-            constraints += [self.nodes[node]["hw"].check_constraints()]
-        # ensure it's within all constraints
-        return reduce(lambda a, b: a and b, constraints)
+            if not self.nodes[node]["hw"].check_constraints():
+                return False
+        # check resource constraints
+        return self.check_resource_constraints() if self.constraints["resource"] else True
 
     def summary(self):
         # get a summary for the whole network

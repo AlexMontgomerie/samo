@@ -16,14 +16,22 @@ def _check_conditions(n_in, n_out, rf):
 class HLS4MLNodeWrapper(Node):
 
     def __init__(self, layer: Layer):
-        self.layer = layer
+
+        # save layer type settings
+        self.layer_type = type(layer)
 
         # get the channel dimensions
         self.channels_in    = layer.get_input_variable().shape[-1]
         self.channels_out   = layer.get_output_variable().shape[-1]
 
+        # get the spatial dimensions
+        if len(layer.get_input_variable().shape) == 3:
+            self.spatial_size = np.prod(layer.get_input_variable().shape[:-1])
+        else:
+            self.spatial_size = 1
+
         # get the kernel size
-        if type(layer) in [Conv1D, Conv2D]:
+        if self.layer_type in [Conv1D, Conv2D]:
             self.kernel_size = layer.get_attr("filt_width")
 
         # set the matching folding constraint
@@ -34,6 +42,10 @@ class HLS4MLNodeWrapper(Node):
         for rf in range(1, self.channels_in*self.channels_out*self.kernel_size*self.kernel_size+1):
             if _check_conditions(self.channels_in*self.kernel_size*self.kernel_size, self.channels_out, rf):
                 self._valid_kernel_folding.append(rf)
+
+        # start with the smallest design
+        if self.layer_type in [Conv1D, Conv2D, Dense]:
+            self.kernel_folding = self._valid_kernel_folding[-1]
 
     def get_reuse_factor(self):
         return self.kernel_folding
@@ -51,12 +63,16 @@ class HLS4MLNodeWrapper(Node):
         return self._valid_kernel_folding
 
     def latency(self):
-        return self.get_reuse_factor()
+        return self.spatial_size*self.get_reuse_factor()
 
     def resource(self):
+        if self.layer_type in [Conv1D, Conv2D, Dense]:
+             dsp_usage = int(self.channels_in*self.channels_out*self.kernel_size*self.kernel_size/self.get_reuse_factor())
+        else:
+            dsp_usage = 0
         return {
              "LUT" : 0,
-             "DSP" : int(self.channels_in*self.channels_out*self.kernel_size*self.kernel_size/self.get_reuse_factor()),
+             "DSP" : dsp_usage,
              "BRAM" : 0,
              "FF" : 0
         }

@@ -44,7 +44,7 @@ cnv = keras.Sequential(
 
 # save the model
 cnv.save("models/cnv.keras")
-onnx.save(onnxmltools.convert_keras(cnv, target_opset=9), "models/cnv.onnx")
+onnx.save(onnxmltools.convert_keras(cnv, target_opset=9, channel_first_inputs=["conv1_input"]), "models/cnv.onnx")
 
 """
 lenet model (from FPGAConvNet)
@@ -64,7 +64,7 @@ lenet = keras.Sequential(
 
 # save the model
 lenet.save("models/lenet.keras")
-onnx.save(onnxmltools.convert_keras(lenet, target_opset=9), "models/lenet.onnx")
+onnx.save(onnxmltools.convert_keras(lenet, target_opset=9, channel_first_inputs=["conv1_input"]), "models/lenet.onnx")
 
 """
 simple model (from HLS4ML)
