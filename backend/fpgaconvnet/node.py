@@ -14,7 +14,7 @@ class FPGAConvNetWrapper(Node):
 
         # add the kernel size if it's a convolution layer
         if type(layer) == ConvolutionLayer:
-            self.kernel_size = layer.kernel_size
+            self.kernel_size = layer.kernel_size[0]
 
         # set the matching folding constraint
         self.constraints = { "matching_folding" : type(layer) not in [ConvolutionLayer, InnerProductLayer] }
@@ -22,7 +22,8 @@ class FPGAConvNetWrapper(Node):
     def update(self):
         self.layer.coarse_in = self.channel_in_folding
         self.layer.coarse_out = self.channel_out_folding
-        self.layer.fine = self.kernel_folding
+        if hasattr(self.layer, "fine"):
+            self.layer.fine = self.kernel_folding
 
     def latency(self):
         return self.layer.latency()

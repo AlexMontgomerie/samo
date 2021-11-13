@@ -5,6 +5,8 @@ import json
 import hls4ml
 from tensorflow import keras
 
+from backend.hls4ml.parser import parse
+
 def main():
 
     # parse arguments
@@ -38,8 +40,19 @@ def main():
             output_dir=args.output_path,  io_type="io_stream")
             # output_dir=args.output_path, part=platform["part"],  io_type="io_stream")
 
-    # build the hls
-    hls_model.build(csim=True, cosim=True)
+    # parse the model for same
+    net = parse(args.model_path)
+
+    #update network kernel folding:
+    for node in config["LayerName"]:
+        if node in net.nodes:
+            net.nodes[node]["hw"].kernel_folding = config["LayerName"][node]["ReuseFactor"]
+            print(net.nodes[node]["hw"].kernel_folding)
+    # report the estimates
+    net.summary()
+
+    # # build the hls
+    # hls_model.build(csim=True, cosim=True)
 
     # get the reports
     hls4ml.report.read_vivado_report(args.output_path)

@@ -3,6 +3,7 @@ from tensorflow import keras
 
 from .node import HLS4MLNodeWrapper
 from .network import HLS4MLNetworkWrapper
+from optimiser import Network
 
 def parse(filepath):
 
@@ -13,7 +14,7 @@ def parse(filepath):
     hls_model = hls4ml.converters.convert_from_keras_model(model)
 
     # convert into the node wrappers
-    network = HLS4MLNetworkWrapper()
+    network = Network()
     for node in hls_model.graph:
         if type(hls_model.graph[node]) == hls4ml.model.hls_layers.Input:
             continue
