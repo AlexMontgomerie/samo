@@ -10,7 +10,7 @@ def parse(model):
     for finn_node in model.graph.node:
         channels_in  = model.get_tensor_shape(finn_node.input[0])[-1]
         channels_out = model.get_tensor_shape(finn_node.output[0])[-1]
-        network.add_node(FinnNodeWrapper(getCustomOp(finn_node), channels_in, channels_out))
+        network.add_node(finn_node.name, hw=FinnNodeWrapper(getCustomOp(finn_node), channels_in, channels_out))
     ## add edges
     for i in range(len(list(network.nodes))-1):
         network.add_edge(list(network.nodes)[i], list(network.nodes)[i+1])

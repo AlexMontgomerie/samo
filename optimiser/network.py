@@ -67,9 +67,13 @@ class Network(nx.DiGraph):
 
 def load_from_opt_network(network, opt_network):
     for i, opt_node in enumerate(opt_network.nodes()):
+        opt_layer = opt_network.nodes[opt_node]["hw"]
+        
         node = list(network.nodes())[i]
-        node.channel_in_folding = opt_node.channel_in_folding
-        node.channel_out_folding = opt_node.channel_out_folding
-        node.kernel_folding = opt_node.kernel_folding
-        node.update()
+        layer = network.nodes[node]["hw"]
+
+        layer.channel_in_folding = opt_layer.channel_in_folding
+        layer.channel_out_folding = opt_layer.channel_out_folding
+        layer.kernel_folding = opt_layer.kernel_folding
+        layer.update()
 
