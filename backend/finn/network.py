@@ -10,8 +10,7 @@ class FinnNetworkWrapper(Network):
                 # get the previous node
                 prev_node = list(self.predecessors(node))[0]
                 if self.nodes[prev_node]["hw"].finn_node.onnx_node.op_type != "StreamingFCLayer_Batch":
-                    if self.nodes[prev_node]["hw"].channel_out_folding != self.nodes[node]["hw"].channel_in_folding:
-                        return False
+                    assert self.nodes[prev_node]["hw"].channel_out_folding == self.nodes[node]["hw"].channel_in_folding
         return True
 
     def check_constraints(self):

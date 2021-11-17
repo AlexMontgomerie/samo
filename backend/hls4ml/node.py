@@ -35,7 +35,8 @@ class HLS4MLNodeWrapper(Node):
             self.kernel_size = layer.get_attr("filt_width")
 
         # set the matching folding constraint
-        self.constraints = { "matching_folding" : False }
+        self.constraints = { "matching_intra_folding" : False,
+                             "matching_inter_folding" : False }
 
         # get all valid kernel folding
         self._valid_kernel_folding = []

@@ -1,0 +1,19 @@
+from finn.core.modelwrapper import ModelWrapper
+from finn.custom_op.registry import getCustomOp
+from finn.util.basic import get_by_name
+
+def export(network, model_path, output_path):
+    model = ModelWrapper(model_path)
+
+    for i, finn_node in enumerate(model.graph.node):
+        node = list(network.nodes())[i]
+        layer = network.nodes[node]["hw"]
+        finn_node = getCustomOp(finn_node)
+
+        if get_by_name(finn_node.onnx_node.attribute, "SIMD") is not None:
+            finn_node.set_nodeattr("SIMD", layer.channel_in_folding)
+
+        if get_by_name(finn_node.onnx_node.attribute, "PE") is not None:
+            finn_node.set_nodeattr("PE", layer.channel_out_folding)
+
+    model.save(output_path)
