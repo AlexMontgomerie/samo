@@ -31,7 +31,31 @@ class BruteForce:
             size *= len(layer_configurations)
         configurations = itertools.product(*configurations)
 
-        print(f"configuration space size : {size}")
+        print(f"full configuration space size : {size}")
+
+        # get all folding-matched configurations
+        configurations = []
+        for layer in tqdm(self.network, desc="collecting intra folding matching configurations"):
+
+            layer_configurations = list(itertools.product(
+                self.network.nodes[layer]["hw"].valid_channel_in_folding,
+                self.network.nodes[layer]["hw"].valid_channel_out_folding,
+                self.network.nodes[layer]["hw"].valid_kernel_folding))
+
+            if self.network.nodes[layer]["hw"].constraints["matching_intra_folding"]:
+                layer_configurations = list(filter(lambda x: x[0] == x[1], layer_configurations))
+            configurations.append(layer_configurations)
+
+        configurations = itertools.product(*configurations)
+        for i, layer in enumerate(tqdm(self.network, desc="collecting inter folding matching configurations")):
+            if self.network.nodes[layer]["hw"].constraints["matching_inter_folding"] and self.network.out_degree(layer) > 0:
+                configurations = filter(lambda x,i=i: x[i][1] == x[i+1][0], configurations)
+
+        size = 0 
+        for _ in tqdm(copy.deepcopy(configurations), desc="counting space size"):
+            size += 1
+
+        print(f"folding-matched configuration space size : {size}")
 
         # track all valid networks
         valid_configs = {}
