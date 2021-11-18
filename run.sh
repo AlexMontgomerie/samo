@@ -28,7 +28,7 @@ function run_fpgaconvnet {
     part=$( jq .part platforms/${platform}.json )
 
     # run the optimiser
-    # python run.py --model models/${network}.onnx --backend fpgaconvnet --platform platforms/${platform}.json --output-path outputs/ --optimiser annealing | tee outputs/saved/${network}_${N}_fpgaconvnet.txt
+    python run.py --model models/${network}.onnx --backend fpgaconvnet --platform platforms/${platform}.json --output-path outputs/ --optimiser annealing | tee outputs/saved/${network}_${N}_fpgaconvnet.txt
 
     # move the output to saved outputs
     mv outputs/same.json outputs/saved/${network}_${N}_fpgaconvnet.json
@@ -51,14 +51,14 @@ function run_fpgaconvnet {
 
 }
 
-# # HLS4ML
-# run_hls4ml simple u250
-# run_hls4ml tfc u250
-# run_hls4ml lenet u250
-# run_hls4ml cnv u250
+# HLS4ML
+run_hls4ml simple zedboard
+run_hls4ml tfc zedboard
+run_hls4ml lenet zc706
+run_hls4ml cnv u250
 
 # fpgaconvnet
 run_fpgaconvnet simple zedboard
 run_fpgaconvnet tfc zedboard
-# run_fpgaconvnet lenet zedboard
-# run_fpgaconvnet cnv zedboard
+run_fpgaconvnet lenet zc706
+run_fpgaconvnet cnv u250

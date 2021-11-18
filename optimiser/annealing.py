@@ -13,9 +13,9 @@ class SimulatedAnnealing:
     network: Network
     T: float = 10.0
     k: float = 100.0
-    T_min: float = 0.00001
-    cool: float = 0.995
-    iterations: int = 100
+    T_min: float = 0.01
+    cool: float = 0.98
+    iterations: int = 10
     valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
     def update(self):
@@ -49,7 +49,11 @@ class SimulatedAnnealing:
         log = []
 
         # keep iterating until we meet the minimum temperature
-        for _ in tqdm(generator(), desc="simulated annealing iterations"):
+        pbar = tqdm(generator())
+        for _ in pbar:
+
+            # update the description
+            pbar.set_description(desc=f"simulated annealing iterations (T={self.T:.3f})")
 
             # get the throughput of the current network state
             latency = self.network.eval_latency()
