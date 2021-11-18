@@ -37,8 +37,7 @@ def main():
 
     # create the hls model
     hls_model = hls4ml.converters.convert_from_keras_model(model, hls_config=config,
-            output_dir=args.output_path,  io_type="io_stream")
-            # output_dir=args.output_path, part=platform["part"],  io_type="io_stream")
+            output_dir=args.output_path,  io_type="io_stream", fpga_part=platform["part"])
 
     # parse the model for same
     net = parse(args.model_path)
@@ -52,7 +51,7 @@ def main():
     net.summary()
 
     # # build the hls
-    # hls_model.build(csim=True, cosim=True)
+    hls_model.build(csim=True, cosim=True)
 
     # get the reports
     hls4ml.report.read_vivado_report(args.output_path)
