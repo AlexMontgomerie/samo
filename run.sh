@@ -51,6 +51,29 @@ function run_fpgaconvnet {
 
 }
 
+function run_finn {
+    # parameters
+    network=$1
+    platform=$2
+    
+    # preprocess the network
+    cp models/${network}.onnx outputs/saved/finn/${network}.onnx
+    cp ../finn/notebooks/same/config/${network}.json ../finn/notebooks/same/config.json
+    jupyter nbconvert --to notebook --execute ../finn/notebooks/same/pre_optimiser_steps.ipynb
+    mv ../finn/notebooks/same/pre_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_pre_optimiser_steps.nbconvert.ipynb
+
+    # run the optimiser
+    python run.py --model outputs/saved/finn/${network}_pre_optimiser.onnx --backend finn --platform platforms/${platform}.json --output-path outputs/saved/finn/${network}_post_optimiser.onnx | tee outputs/saved/${network}_${N}_finn.txt
+
+    # save the log aswell
+    mv outputs/log.csv outputs/saved/${network}_${N}_finn.csv
+
+    # build the hardware
+    jupyter nbconvert --to notebook --execute ../finn/notebooks/same/post_optimiser_steps.ipynb
+    mv ../finn/notebooks/same/post_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_post_optimiser_steps.nbconvert.ipynb
+    cat ../finn/notebooks/same/report.txt >> outputs/saved/${network}_${N}_finn.txt
+}
+
 # HLS4ML
 run_hls4ml simple zedboard
 run_hls4ml tfc zedboard
@@ -62,3 +85,10 @@ run_fpgaconvnet simple zedboard
 run_fpgaconvnet tfc zedboard
 run_fpgaconvnet lenet zc706
 run_fpgaconvnet cnv u250
+
+# finn
+run_finn simple zedboard
+run_finn tfc zedboard
+run_finn lenet zc706
+run_finn cnv u250
+
