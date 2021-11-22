@@ -76,13 +76,17 @@ class Network(nx.DiGraph):
 
         if self.in_degree(node) > 0 and "i" in direction:
             prev_node = list(self.predecessors(node))[0]
-            if self.nodes[prev_node]["hw"].constraints["matching_inter_folding"]:
+            prev_channel_out_folding = self.nodes[prev_node]["hw"].channel_out_folding
+            if self.nodes[prev_node]["hw"].constraints["matching_inter_folding"] or \
+               self.nodes[prev_node]["hw"].constraints["divisible_inter_folding"] and max(channel_in_folding, prev_channel_out_folding) % min(channel_in_folding, prev_channel_out_folding) != 0:
                 self.nodes[prev_node]["hw"].channel_out_folding = channel_in_folding
                 self.folding_match(prev_node, channel_in_folding, "i")
 
         if self.out_degree(node) > 0 and "o" in direction:
-            if node_hw.constraints["matching_inter_folding"]:
-                next_node = list(self.successors(node))[0]
+            next_node = list(self.successors(node))[0]
+            next_channel_in_folding = self.nodes[next_node]["hw"].channel_in_folding
+            if node_hw.constraints["matching_inter_folding"] or \
+               node_hw.constraints["divisible_inter_folding"] and max(channel_out_folding, next_channel_in_folding) % min(channel_out_folding, next_channel_in_folding) != 0:
                 self.nodes[next_node]["hw"].channel_in_folding = channel_out_folding
                 self.folding_match(next_node, channel_out_folding, "o")
 

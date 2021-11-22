@@ -14,7 +14,7 @@ class Node:
     channel_in_folding: int = 1
     channel_out_folding: int = 1
     kernel_folding: int = 1
-    constraints: dict = field(default_factory=lambda: {"matching_intra_folding": True, "matching_inter_folding": False})
+    constraints: dict = field(default_factory=lambda: {"matching_intra_folding": True, "matching_inter_folding": False, "divisible_inter_folding": True})
 
     def __hash__(self):
         return hash(repr(self))

@@ -50,6 +50,8 @@ class BruteForce:
         for i, layer in enumerate(tqdm(self.network, desc="collecting inter folding matching configurations")):
             if self.network.nodes[layer]["hw"].constraints["matching_inter_folding"] and self.network.out_degree(layer) > 0:
                 configurations = filter(lambda x,i=i: x[i][1] == x[i+1][0], configurations)
+            if self.network.nodes[layer]["hw"].constraints["divisible_inter_folding"] and self.network.out_degree(layer) > 0:
+                configurations = filter(lambda x,i=i: max(x[i][1], x[i+1][0]) % min(x[i][1], x[i+1][0]) == 0, configurations)
 
         size = 0 
         for _ in tqdm(copy.deepcopy(configurations), desc="counting space size"):
