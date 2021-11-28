@@ -16,28 +16,33 @@ def main():
             help="hardware platform details (.json)")
     parser.add_argument("-o", "--output-path", metavar="PATH", required=True,
             help="output path for the optimised model (.json, .onnx)")
-    parser.add_argument("--optimiser", choices=["brute", "annealing"], required=False, default="annealing",
+    parser.add_argument("--optimiser", choices=["brute", "annealing", "init"], required=False, default="annealing",
             help="optimiser to use")
 
     args = parser.parse_args()
 
-    # get the correct backend parser
+    # get the backend parser and exporter
     parser = importlib.import_module(f"backend.{args.backend}.parser")
+    exporter = importlib.import_module(f"backend.{args.backend}.export")
 
     # parse the network
     graph = parser.parse(args.model)
+
+    # parse the platform
+    with open(args.platform, "r") as f:
+        platform = json.load(f)
 
     # create an optimiser instance for the network
     if args.optimiser == "annealing":
         opt = SimulatedAnnealing(graph)
     elif args.optimiser == "brute":
         opt = BruteForce(graph)
+    elif args.optimiser == "init":
+        graph.summary()
+        exporter.export(graph, args.model, args.output_path)
+        return
     else:
         raise NameError
-
-    # parse the platform
-    with open(args.platform, "r") as f:
-        platform = json.load(f)
 
     # update the platform resource constraints
     opt.network.platform = platform["resources"]
@@ -47,9 +52,6 @@ def main():
 
     # print a summary of the run
     opt.network.summary()
-
-    # get the correct backend exporter
-    exporter = importlib.import_module(f"backend.{args.backend}.export")
 
     # export the design
     exporter.export(opt.network, args.model, args.output_path)
