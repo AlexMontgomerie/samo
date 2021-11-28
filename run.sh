@@ -62,7 +62,7 @@ function run_finn {
     # parameters
     network=$1
     platform=$2
-    
+
     # preprocess the network
     cp models/${network}.onnx outputs/saved/finn/${network}.onnx
     cp ../finn/notebooks/same/config/${network}.json ../finn/notebooks/same/config.json
@@ -70,7 +70,7 @@ function run_finn {
     mv ../finn/notebooks/same/pre_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_pre_optimiser_steps.nbconvert.ipynb
 
     # run the optimiser
-    python run.py --model outputs/saved/finn/${network}_pre_optimiser.onnx --backend finn --platform platforms/${platform}.json --output-path outputs/saved/finn/${network}_post_optimiser.onnx | tee outputs/saved/${network}_${N}_finn.txt
+    python run.py --model outputs/saved/finn/${network}_pre_optimiser.onnx --backend finn --platform platforms/${platform}.json --output-path outputs/saved/finn/${network}_post_optimiser.onnx --optimiser ${OPT} | tee outputs/saved/${network}_${N}_finn.txt
 
     # save the log aswell
     mv outputs/log.csv outputs/saved/${network}_${N}_finn.csv
