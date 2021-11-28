@@ -18,7 +18,8 @@ class FPGAConvNetWrapper(Node):
 
         # set the matching folding constraint
         self.constraints = { "matching_intra_folding" : type(layer) not in [ConvolutionLayer, InnerProductLayer],
-                             "matching_inter_folding" : False}
+                             "matching_inter_folding" : False,
+                             "divisible_inter_folding" : False}
 
     def update(self):
         self.layer.coarse_in = self.channel_in_folding

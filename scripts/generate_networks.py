@@ -13,7 +13,7 @@ tfc = keras.Sequential(
         layers.Dense(64, input_shape=[784], activation="relu", name="ip1"),
         layers.Dense(64, activation="relu", name="ip2"),
         layers.Dense(64, activation="relu", name="ip3"),
-        layers.Dense(10, activation="relu", name="ip4")
+        layers.Dense(10, name="ip4")
     ], name="tfc"
 )
 
@@ -38,7 +38,7 @@ cnv = keras.Sequential(
         layers.Flatten(),
         layers.Dense(512, activation="relu", name="ip1"),
         layers.Dense(512, activation="relu", name="ip2"),
-        layers.Dense(10, activation="relu", name="ip3")
+        layers.Dense(10, name="ip3")
     ], name="cnv"
 )
 
@@ -58,7 +58,7 @@ lenet = keras.Sequential(
         layers.MaxPooling2D(pool_size=(2,2), strides=(2,2), name="pool2"),
         layers.Flatten(),
         layers.Dense(500, activation="relu", name="ip1"),
-        layers.Dense(10, activation="relu", name="ip3")
+        layers.Dense(10, name="ip3")
     ], name="lenet"
 )
 
@@ -72,9 +72,9 @@ simple model (from HLS4ML)
 
 simple = keras.Sequential(
     [
-        layers.Dense(64, input_shape=[16], name="ip1"),
-        layers.Dense(32, name="ip2"),
-        layers.Dense(32, name="ip3"),
+        layers.Dense(64, input_shape=[16], activation="relu", name="ip1"),
+        layers.Dense(32, activation="relu", name="ip2"),
+        layers.Dense(32, activation="relu", name="ip3"),
         layers.Dense(5, name="ip4")
     ], name="simple"
 )

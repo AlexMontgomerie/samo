@@ -36,7 +36,8 @@ class HLS4MLNodeWrapper(Node):
 
         # set the matching folding constraint
         self.constraints = { "matching_intra_folding" : False,
-                             "matching_inter_folding" : False }
+                             "matching_inter_folding" : False,
+                             "divisible_inter_folding" : False}
 
         # get all valid kernel folding
         self._valid_kernel_folding = []

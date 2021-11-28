@@ -13,7 +13,8 @@ class FinnNodeWrapper(Node):
 
         # set the matching folding constraint
         self.constraints = { "matching_intra_folding" : finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"],
-                             "matching_inter_folding": finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"]}
+                             "matching_inter_folding": finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"],
+                             "divisible_inter_folding": finn_node.onnx_node.op_type in ["StreamingFCLayer_Batch"]}
 
     def update(self):
         if get_by_name(self.finn_node.onnx_node.attribute, "SIMD") is not None:
