@@ -1,6 +1,6 @@
 import fpgaconvnet_optimiser.tools.parser as parser
 from .node import FPGAConvNetWrapper
-from optimiser import Network
+from samo.model import Network
 
 def parse(filepath):
 

@@ -9,4 +9,4 @@ $FPGACONVNET_HLS/scripts/run_network.sh -n $name \
     -p $hardware_path \
     -b xilinx.com:zc706:part0:1.4 \
     -f xcku115-flvb2104-2-i \
-    -s
+    -i

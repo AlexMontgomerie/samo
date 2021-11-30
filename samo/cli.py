@@ -2,8 +2,8 @@ import argparse
 import importlib
 import json
 
-from optimiser.annealing import SimulatedAnnealing
-from optimiser.brute import BruteForce
+from samo.optimiser.annealing import SimulatedAnnealing
+from samo.optimiser.brute import BruteForce
 
 def main():
     # parse arguments
@@ -22,8 +22,8 @@ def main():
     args = parser.parse_args()
 
     # get the backend parser and exporter
-    parser = importlib.import_module(f"backend.{args.backend}.parser")
-    exporter = importlib.import_module(f"backend.{args.backend}.export")
+    parser = importlib.import_module(f"samo.backend.{args.backend}.parser")
+    exporter = importlib.import_module(f"samo.backend.{args.backend}.export")
 
     # parse the network
     graph = parser.parse(args.model)

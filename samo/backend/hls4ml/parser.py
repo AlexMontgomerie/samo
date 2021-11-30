@@ -3,7 +3,7 @@ from tensorflow import keras
 
 from .node import HLS4MLNodeWrapper
 from .network import HLS4MLNetworkWrapper
-from optimiser import Network
+from samo.model import Network
 
 def parse(filepath):
 

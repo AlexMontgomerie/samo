@@ -1,4 +1,4 @@
-from optimiser import Network
+from samo.model import Network
 
 class FinnNetworkWrapper(Network):
 

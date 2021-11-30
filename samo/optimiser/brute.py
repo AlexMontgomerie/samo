@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 from tqdm import tqdm
 
-from .network import Network
+from samo.model.network import Network
 
 @dataclass
 class BruteForce:
@@ -53,7 +53,7 @@ class BruteForce:
             if self.network.nodes[layer]["hw"].constraints["divisible_inter_folding"] and self.network.out_degree(layer) > 0:
                 configurations = filter(lambda x,i=i: max(x[i][1], x[i+1][0]) % min(x[i][1], x[i+1][0]) == 0, configurations)
 
-        size = 0 
+        size = 0
         for _ in tqdm(copy.deepcopy(configurations), desc="counting space size"):
             size += 1
 

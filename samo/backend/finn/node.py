@@ -1,6 +1,6 @@
 from finn.util.basic import get_by_name
 
-from optimiser import Node
+from samo.model import Node
 
 class FinnNodeWrapper(Node):
     def __init__(self, finn_node, channels_in, channels_out):
