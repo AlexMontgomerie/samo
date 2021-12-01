@@ -23,7 +23,39 @@ Example platform configurations are given in the `platforms` directory and examp
 
 ### FINN
 
-> TODO
+In order to run the optimiser with the FINN toolflow, the first step is to download the following fork
+```
+git clone https://github.com/Yu-Zhewen/finn.git
+cd finn
+git checkout 4cc0b6fdae2f5c06f0b5bcc6fa45fba4d8b69111
+```
+
+As FINN requires docker, set SAMO_DIR to the path of SAMO in run_docker.sh, before entering the docker.
+```
+bash run_docker.sh
+```
+
+Within the docker, generate the FINN-ONNX through the following steps.
+```
+cd ../samo
+cp models/${network}.onnx outputs/saved/finn/${network}.onnx
+cp ../finn/notebooks/samo/config/${network}.json ../finn/notebooks/samo/config.json
+jupyter nbconvert --to notebook --execute ../finn/notebooks/samo/pre_optimiser_steps.ipynb
+mv ../finn/notebooks/samo/pre_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_pre_optimiser_steps.nbconvert.ipynb
+```
+
+To optimise the CNN model in the FINN-ONNX format, you need to do:
+```
+python -m samo --optimiser annealing --model outputs/saved/finn/${network}_pre_optimiser.onnx  \
+    --backend finn --platform platforms/zedboard.json \
+    --output-path outputs/saved/finn/${network}_post_optimiser.onnx
+```
+
+Finally, the following command is used to generate the hardware.
+```
+jupyter nbconvert --to notebook --execute ../finn/notebooks/samo/post_optimiser_steps.ipynb
+```
+
 
 ### HLS4ML
 
