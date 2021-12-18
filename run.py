@@ -3,6 +3,7 @@ import importlib
 import json
 
 from optimiser.annealing import SimulatedAnnealing
+from optimiser.rule import RuleBased
 from optimiser.brute import BruteForce
 
 def main():
@@ -16,7 +17,7 @@ def main():
             help="hardware platform details (.json)")
     parser.add_argument("-o", "--output-path", metavar="PATH", required=True,
             help="output path for the optimised model (.json, .onnx)")
-    parser.add_argument("--optimiser", choices=["brute", "annealing", "init"], required=False, default="annealing",
+    parser.add_argument("--optimiser", choices=["brute", "annealing", "init", "rule"], required=False, default="annealing",
             help="optimiser to use")
 
     args = parser.parse_args()
@@ -35,6 +36,8 @@ def main():
     # create an optimiser instance for the network
     if args.optimiser == "annealing":
         opt = SimulatedAnnealing(graph)
+    elif args.optimiser == "rule":
+        opt = RuleBased(graph)
     elif args.optimiser == "brute":
         opt = BruteForce(graph)
     elif args.optimiser == "init":
