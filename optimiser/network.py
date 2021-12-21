@@ -38,6 +38,14 @@ class Network(nx.DiGraph):
         # check resource constraints
         return self.check_resource_constraints() if self.constraints["resource"] else True
 
+    def avg_rsc_util(self):
+        resource = self.eval_resource()
+        avg_rsc_utli = 0.25 * (resource["BRAM"] / self.platform["BRAM"]) \
+                        + 0.25 * (resource["DSP"] / self.platform["DSP"]) \
+                        + 0.25 * (resource["LUT"] / self.platform["LUT"]) \
+                        + 0.25 * (resource["FF"] / self.platform["FF"])
+        return avg_rsc_utli
+
     def summary(self):
         # get a summary for the whole network
         latency = self.eval_latency()

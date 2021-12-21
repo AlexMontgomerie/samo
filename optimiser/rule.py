@@ -9,8 +9,7 @@ from .network import Network
 @dataclass
 class RuleBased:
     network: Network
-    sorted_variables: list = field(default_factory=lambda: ["kernel_folding", "channel_out_folding", "channel_in_folding"])
-    # todo: learn and sort the cost of variable
+    valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
     def update(self):
         for index, layer in enumerate(self.network):
@@ -35,7 +34,8 @@ class RuleBased:
             node_index = np.argsort(node_latencys)[-1]
             layer = list(self.network.nodes())[node_index]
 
-            for variable in self.sorted_variables:
+            step_candidates = {}
+            for variable in self.valid_variables:
                 network_copy = copy.deepcopy(self.network)
                 node_hw = self.network.nodes[layer]["hw"]
 
@@ -68,29 +68,36 @@ class RuleBased:
 
                     # check the network is within platform resource constraints
                     if self.network.check_constraints():
-                        step = True
+                        step_candidates[variable] = copy.deepcopy(self.network)
 
-                        # log the current resources and latency
-                        new_latency = self.network.eval_latency()
-                        new_resource = self.network.eval_resource()
+                    self.network = network_copy
+            
+            step = len(step_candidates) > 0
 
-                        # update the log
-                        log += [[
-                                new_latency,
-                                new_resource["BRAM"],
-                                new_resource["DSP"],
-                                new_resource["LUT"],
-                                new_resource["FF"],
-                                step,
-                                layer,
-                                variable
-                        ]]
-                            
-                        break
-                    else:
-                        self.network = network_copy
+            # choose the transformation with minimal resource                
+            chosen = True
+            sorted_candidates = dict(sorted(step_candidates.items(), key=lambda kv: kv[1].avg_rsc_util()))
+            for variable, network in sorted_candidates.items():
+                if chosen:
+                    self.network = network
+                
+                # log the current resources and latency
+                new_latency = self.network.eval_latency()
+                new_resource = self.network.eval_resource()
 
+                # update the log
+                log += [[
+                        new_latency,
+                        new_resource["BRAM"],
+                        new_resource["DSP"],
+                        new_resource["LUT"],
+                        new_resource["FF"],
+                        chosen,
+                        layer,
+                        variable
+                ]]
 
+                chosen = False
 
         # write log to a file
         with open("outputs/log.csv", "w") as f:
