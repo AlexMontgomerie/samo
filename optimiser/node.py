@@ -21,15 +21,15 @@ class Node:
 
     @property
     def valid_channel_in_folding(self):
-        return get_factors(self.channels_in)
+        return sorted(get_factors(self.channels_in))
 
     @property
     def valid_channel_out_folding(self):
-        return get_factors(self.channels_out)
+        return sorted(get_factors(self.channels_out))
 
     @property
     def valid_kernel_folding(self):
-        return get_factors(self.kernel_size*self.kernel_size)
+        return sorted(get_factors(self.kernel_size*self.kernel_size))
 
     def check_matching_intra_folding(self):
         assert self.channel_in_folding == self.channel_out_folding

@@ -32,3 +32,4 @@ class FPGAConvNetWrapper(Node):
 
     def resource(self):
         return self.layer.resource()
+
