@@ -98,4 +98,6 @@ run_finn simple zedboard
 run_finn tfc zedboard
 run_finn lenet zc706
 run_finn cnv u250
-
+run_finn sfc zc706
+run_finn lfc u250
+run_finn mpcnn zc706

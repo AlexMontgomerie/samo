@@ -30,9 +30,8 @@ class BruteForce:
             configurations.append(layer_configurations)
             size *= len(layer_configurations)
         configurations = itertools.product(*configurations)
-
         print(f"full configuration space size : {size}")
-
+        '''
         # get all folding-matched configurations
         configurations = []
         for layer in tqdm(self.network, desc="collecting intra folding matching configurations"):
@@ -58,6 +57,7 @@ class BruteForce:
             size += 1
 
         print(f"folding-matched configuration space size : {size}")
+        '''
 
         # track all valid networks
         valid_configs = {}
