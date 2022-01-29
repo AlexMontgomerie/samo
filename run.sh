@@ -66,9 +66,9 @@ function run_finn {
 
     # preprocess the network
     cp models/${network}.onnx outputs/saved/finn/${network}.onnx
-    cp ../finn/notebooks/same/config/${network}.json ../finn/notebooks/same/config.json
-    jupyter nbconvert --to notebook --execute ../finn/notebooks/same/pre_optimiser_steps.ipynb
-    mv ../finn/notebooks/same/pre_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_pre_optimiser_steps.nbconvert.ipynb
+    cp ../finn/notebooks/samo/config/${network}.json ../finn/notebooks/samo/config.json
+    jupyter nbconvert --to notebook --execute ../finn/notebooks/samo/pre_optimiser_steps.ipynb
+    mv ../finn/notebooks/samo/pre_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_pre_optimiser_steps.nbconvert.ipynb
 
     # run the optimiser
     python run.py --model outputs/saved/finn/${network}_pre_optimiser.onnx --backend finn --platform platforms/${platform}.json --output-path outputs/saved/finn/${network}_post_optimiser.onnx --optimiser ${OPT} | tee outputs/saved/${network}_${N}_finn.txt
@@ -77,16 +77,16 @@ function run_finn {
     mv outputs/log.csv outputs/saved/${network}_${N}_finn.csv
 
     # build the hardware
-    jupyter nbconvert --to notebook --execute ../finn/notebooks/same/post_optimiser_steps.ipynb
-    mv ../finn/notebooks/same/post_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_post_optimiser_steps.nbconvert.ipynb
-    cat ../finn/notebooks/same/report.txt >> outputs/saved/${network}_${N}_finn.txt
+    jupyter nbconvert --to notebook --execute ../finn/notebooks/samo/post_optimiser_steps.ipynb
+    mv ../finn/notebooks/samo/post_optimiser_steps.nbconvert.ipynb outputs/saved/finn/${network}_post_optimiser_steps.nbconvert.ipynb
+    cat ../finn/notebooks/samo/report.txt >> outputs/saved/${network}_${N}_finn.txt
 }
 
 # HLS4ML
 run_hls4ml simple zedboard
 run_hls4ml tfc zedboard
-# run_hls4ml lenet zc706
-# run_hls4ml cnv u250
+run_hls4ml lenet zc706
+run_hls4ml cnv u250
 
 # fpgaconvnet
 run_fpgaconvnet simple zedboard
@@ -103,3 +103,6 @@ run_finn sfc zc706
 run_finn lfc u250
 run_finn mpcnn zc706
 
+#run_finn alexnet u250 # finn does not support maxpool whose kernel_size != stride
+#run_finn vgg11 u250 # w4a4 init, bram 33447/2160 lut 879977/331680
+#run_finn mobilenetv1 u250 # w4a4 init, bram 3356/2160 lut 36771/331680; w1a1 init, bram 64/2160 lut 478883/331680
