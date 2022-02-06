@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from functools import reduce
 from tabulate import tabulate
 import networkx as nx
+import json
 
 class Network(nx.DiGraph):
     freq: float = 100.0
@@ -81,6 +82,7 @@ class Network(nx.DiGraph):
         layer_summary = []
         for node in self.nodes:
             layer = self.nodes[node]["hw"]
+            print(layer.channel_in_folding, layer.channel_out_folding, layer.kernel_folding)
             layer_summary.append(
                 [ node, int(layer.latency()), layer.resource()["DSP"],
                     layer.resource()["BRAM"], layer.resource()["LUT"], layer.resource()["FF"]] )
@@ -117,4 +119,39 @@ class Network(nx.DiGraph):
                node_hw.constraints["divisible_inter_folding"] and max(channel_out_folding, next_channel_in_folding) % min(channel_out_folding, next_channel_in_folding) != 0:
                 self.nodes[next_node]["hw"].channel_in_folding = channel_out_folding
                 self.folding_match(next_node, channel_out_folding, "o")
+
+
+    def save_config(self, config_path):
+        network_config = {}
+        for node in self.nodes:
+            node_hw = self.nodes[node]["hw"]
+
+            node_config = {}
+            node_config["channel_in_folding"] = node_hw.channel_in_folding
+            node_config["channel_out_folding"] = node_hw.channel_out_folding
+            node_config["kernel_folding"] = node_hw.kernel_folding
+
+            network_config[node] = node_config
+            
+        with open(config_path,"w") as f:
+            json.dump(network_config,f,indent=2)
+
+    def load_config(self, config_path):
+        with open(config_path,"r") as f:
+            network_config = json.load(f)
+
+        for node in self.nodes:
+            node_hw = self.nodes[node]["hw"]
+            node_config = network_config[node]
+
+            node_hw.channel_in_folding = node_config["channel_in_folding"]
+            node_hw.channel_out_folding = node_config["channel_out_folding"]
+            node_hw.kernel_folding = node_config["kernel_folding"]
+            print(node_config)
+
+        if not self.check_constraints():
+            print("Loading a config that may violate constraints")
+
+        for node in self.nodes:
+            self.nodes[node]["hw"].update()
 

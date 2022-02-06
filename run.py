@@ -40,6 +40,9 @@ def main():
     elif args.optimiser == "brute":
         opt = BruteForce(graph)
     elif args.optimiser == "init":
+        #graph.save_config("cnv_finn_baseline.json")
+        #graph.load_config("configs/mobilenetv1_finn_baseline.json")
+
         graph.summary()
         exporter.export(graph, args.model, args.output_path)
         return
