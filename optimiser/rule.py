@@ -42,6 +42,10 @@ class RuleBased:
             
             current_config = [node_hw.channel_in_folding, node_hw.channel_out_folding, node_hw.kernel_folding]
             layer_configurations = list(filter(lambda x: np.prod(x) > np.prod(current_config), layer_configurations))
+            
+            if node_hw.constraints["matching_intra_folding"]:
+                layer_configurations = list(filter(lambda x: x[0] == x[1], layer_configurations))
+            
             layer_configurations = sorted(layer_configurations, key=lambda x: np.prod(x))
 
             # uncomment the following code, faster optimiser but worse performance
