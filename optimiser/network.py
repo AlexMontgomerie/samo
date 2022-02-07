@@ -4,11 +4,31 @@ from tabulate import tabulate
 import networkx as nx
 
 class Network(nx.DiGraph):
-    platform: dict = {"BRAM": 0, "DSP": 0, "FF": 0, "LUT": 0}
+    freq: float = 100.0
+    wordlength: int = 16
+    platform: dict = {
+            "resource": {
+                "BRAM": 0,
+                "DSP": 0,
+                "FF": 0,
+                "LUT": 0
+            },
+            "bandwidth": 0.0
+        }
     constraints: dict = {"resource" : True, "inter_layer_matching" : True}
 
     def eval_latency(self):
         return max([ self.nodes[layer]["hw"].latency() for layer in self.nodes])
+
+    def eval_throughput_in(self):
+        input_node = [ edge for edge, deg in self.in_degree() if not deg ]
+        return self.nodes[input_node]["hw"].size_in/self.eval_latency() * \
+                self.freq * self.wordlength
+
+    def eval_throughput_out(self):
+        output_node = [ edge for edge, deg in self.out_degree() if not deg ]
+        return self.nodes[output_node]["hw"].size_out/self.eval_latency() * \
+                self.freq * self.wordlength
 
     def eval_resource(self):
         return {
@@ -23,10 +43,10 @@ class Network(nx.DiGraph):
         resource = self.eval_resource()
         # check within the platform constraints
         rsc_constraints = []
-        rsc_constraints += [resource["BRAM"] <= self.platform["BRAM"]]
-        rsc_constraints += [resource["FF"]   <= self.platform["FF"]]
-        rsc_constraints += [resource["LUT"]  <= self.platform["LUT"]]
-        rsc_constraints += [resource["DSP"]  <= self.platform["DSP"]]
+        rsc_constraints += [resource["BRAM"] <= self.platform["resource"]["BRAM"]]
+        rsc_constraints += [resource["FF"]   <= self.platform["resource"]["FF"]]
+        rsc_constraints += [resource["LUT"]  <= self.platform["resource"]["LUT"]]
+        rsc_constraints += [resource["DSP"]  <= self.platform["resource"]["DSP"]]
         # if network is within constraints, return true
         return reduce(lambda a, b: a and b, rsc_constraints)
 
@@ -40,10 +60,10 @@ class Network(nx.DiGraph):
 
     def avg_rsc_util(self):
         resource = self.eval_resource()
-        avg_rsc_utli = 0.25 * (resource["BRAM"] / self.platform["BRAM"]) \
-                        + 0.25 * (resource["DSP"] / self.platform["DSP"]) \
-                        + 0.25 * (resource["LUT"] / self.platform["LUT"]) \
-                        + 0.25 * (resource["FF"] / self.platform["FF"])
+        avg_rsc_utli = 0.25 * (resource["BRAM"] / self.platform["resource"]["BRAM"]) \
+                        + 0.25 * (resource["DSP"] / self.platform["resource"]["DSP"]) \
+                        + 0.25 * (resource["LUT"] / self.platform["resource"]["LUT"]) \
+                        + 0.25 * (resource["FF"] / self.platform["resource"]["FF"])
         return avg_rsc_utli
 
     def summary(self):
