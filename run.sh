@@ -10,7 +10,8 @@ function run_hls4ml {
 
     # run the optimiser
     # python run.py --model models/${network}.keras --backend hls4ml --platform platforms/${platform}.json --output-path outputs/${network}_hls4ml.json --optimiser annealing
-    python run.py --model models/${network}.keras --backend hls4ml --platform platforms/${platform}.json --output-path outputs/${network}_hls4ml.json --optimiser ${OPT}
+    time python run.py --model models/${network}.keras --backend hls4ml --platform platforms/${platform}.json --output-path outputs/${network}_hls4ml.json --optimiser ${OPT} | tee outputs/saved/${network}_${N}_hls4ml.txt
+
 
     # move the output to saved outputs
     mv outputs/${network}_hls4ml.json outputs/saved/${network}_${N}_hls4ml.json
@@ -18,13 +19,13 @@ function run_hls4ml {
     # save the log aswell
     mv outputs/log.csv outputs/saved/${network}_${N}_hls4ml.csv
 
-    # build the hardware
-    python -m scripts.build_hls4ml --model-path models/${network}.keras --config-path outputs/saved/${network}_${N}_hls4ml.json --platform platforms/${platform}.json --output-path outputs/hls4ml_prj | tee outputs/saved/${network}_${N}_hls4ml.txt
+    # # build the hardware
+    # python -m scripts.build_hls4ml --model-path models/${network}.keras --config-path outputs/saved/${network}_${N}_hls4ml.json --platform platforms/${platform}.json --output-path outputs/hls4ml_prj | tee outputs/saved/${network}_${N}_hls4ml.txt
 
-    # run implementation
-    cd outputs/hls4ml_prj
-    vivado_hls -f ../../scripts/run_hls4ml_impl.tcl myproject_prj | tee -a ../saved/${network}_${N}_hls4ml.txt
-    cd ../..
+    # # run implementation
+    # cd outputs/hls4ml_prj
+    # vivado_hls -f ../../scripts/run_hls4ml_impl.tcl myproject_prj | tee -a ../saved/${network}_${N}_hls4ml.txt
+    # cd ../..
 }
 
 function run_fpgaconvnet {
@@ -101,3 +102,4 @@ run_finn cnv u250
 run_finn sfc zc706
 run_finn lfc u250
 run_finn mpcnn zc706
+

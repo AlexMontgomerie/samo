@@ -37,7 +37,7 @@ def main():
 
     # create the hls model
     hls_model = hls4ml.converters.convert_from_keras_model(model, hls_config=config,
-            output_dir=args.output_path,  io_type="io_stream", fpga_part=platform["part"])
+            output_dir=args.output_path,  io_type="io_stream", part=platform["part"])
 
     # parse the model for same
     net = parse(args.model_path)

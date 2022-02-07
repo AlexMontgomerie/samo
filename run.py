@@ -19,7 +19,6 @@ def main():
             help="output path for the optimised model (.json, .onnx)")
     parser.add_argument("--optimiser", choices=["brute", "annealing", "init", "rule"], required=False, default="annealing",
             help="optimiser to use")
-
     args = parser.parse_args()
 
     # get the backend parser and exporter

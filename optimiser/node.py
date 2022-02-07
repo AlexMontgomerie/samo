@@ -45,7 +45,7 @@ class Node:
         # ensure all constraints are held
         return reduce(lambda a, b: a and b, constraints)
 
-    def update(self):
+    def update(self, hw_update=False):
         pass
 
     def latency(self):
