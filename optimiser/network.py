@@ -8,7 +8,7 @@ class Network(nx.DiGraph):
     freq: float = 100.0
     wordlength: int = 16
     platform: dict = {
-            "resource": {
+            "resources": {
                 "BRAM": 0,
                 "DSP": 0,
                 "FF": 0,
@@ -22,12 +22,12 @@ class Network(nx.DiGraph):
         return max([ self.nodes[layer]["hw"].latency() for layer in self.nodes])
 
     def eval_throughput_in(self):
-        input_node = [ edge for edge, deg in self.in_degree() if not deg ]
+        input_node = [ edge for edge, deg in self.in_degree() if not deg ][0]
         return self.nodes[input_node]["hw"].size_in/self.eval_latency() * \
                 self.freq * self.wordlength
 
     def eval_throughput_out(self):
-        output_node = [ edge for edge, deg in self.out_degree() if not deg ]
+        output_node = [ edge for edge, deg in self.out_degree() if not deg ][0]
         return self.nodes[output_node]["hw"].size_out/self.eval_latency() * \
                 self.freq * self.wordlength
 
@@ -44,12 +44,15 @@ class Network(nx.DiGraph):
         resource = self.eval_resource()
         # check within the platform constraints
         rsc_constraints = []
-        rsc_constraints += [resource["BRAM"] <= self.platform["resource"]["BRAM"]]
-        rsc_constraints += [resource["FF"]   <= self.platform["resource"]["FF"]]
-        rsc_constraints += [resource["LUT"]  <= self.platform["resource"]["LUT"]]
-        rsc_constraints += [resource["DSP"]  <= self.platform["resource"]["DSP"]]
+        rsc_constraints += [resource["BRAM"] <= self.platform["resources"]["BRAM"]]
+        rsc_constraints += [resource["FF"]   <= self.platform["resources"]["FF"]]
+        rsc_constraints += [resource["LUT"]  <= self.platform["resources"]["LUT"]]
+        rsc_constraints += [resource["DSP"]  <= self.platform["resources"]["DSP"]]
         # if network is within constraints, return true
         return reduce(lambda a, b: a and b, rsc_constraints)
+
+    def check_memory_bandwdith_constraint(self):
+        return (self.eval_throughput_in() + self.eval_throughput_out()) < 1000*self.platform["bandwidth"]
 
     def check_constraints(self):
         # check all the constraints (if they are required)
@@ -57,14 +60,16 @@ class Network(nx.DiGraph):
             if not self.nodes[node]["hw"].check_constraints():
                 return False
         # check resource constraints
-        return self.check_resource_constraints() if self.constraints["resource"] else True
+        resource_check = self.check_resource_constraints() if self.constraints["resource"] else True
+        bandwidth_check = self.check_memory_bandwdith_constraint()
+        return resource_check and bandwidth_check
 
     def avg_rsc_util(self):
         resource = self.eval_resource()
-        avg_rsc_utli = 0.25 * (resource["BRAM"] / self.platform["resource"]["BRAM"]) \
-                        + 0.25 * (resource["DSP"] / self.platform["resource"]["DSP"]) \
-                        + 0.25 * (resource["LUT"] / self.platform["resource"]["LUT"]) \
-                        + 0.25 * (resource["FF"] / self.platform["resource"]["FF"])
+        avg_rsc_utli = 0.25 * (resource["BRAM"] / self.platform["resources"]["BRAM"]) \
+                        + 0.25 * (resource["DSP"] / self.platform["resources"]["DSP"]) \
+                        + 0.25 * (resource["LUT"] / self.platform["resources"]["LUT"]) \
+                        + 0.25 * (resource["FF"] / self.platform["resources"]["FF"])
         return avg_rsc_utli
 
     def summary(self):
@@ -73,10 +78,10 @@ class Network(nx.DiGraph):
         resources = self.eval_resource()
         network_summary = tabulate([[
             int(latency),
-            f"{resources['DSP']} / {self.platform['DSP']}",
-            f"{resources['BRAM']} / {self.platform['BRAM']}",
-            f"{resources['LUT']} / {self.platform['LUT']}",
-            f"{resources['FF']} / {self.platform['FF']}"
+            f"{resources['DSP']} / {self.platform['resources']['DSP']}",
+            f"{resources['BRAM']} / {self.platform['resources']['BRAM']}",
+            f"{resources['LUT']} / {self.platform['resources']['LUT']}",
+            f"{resources['FF']} / {self.platform['resources']['FF']}"
         ]], headers=["Latency (cycles)", "DSP", "BRAM", "LUT", "FF"])
         # get a summary for each layer
         layer_summary = []
@@ -87,9 +92,16 @@ class Network(nx.DiGraph):
                 [ node, int(layer.latency()), layer.resource()["DSP"],
                     layer.resource()["BRAM"], layer.resource()["LUT"], layer.resource()["FF"]] )
         layer_summary = tabulate(layer_summary, headers=["Layer", "Latency (cycles)", "DSP", "BRAM", "LUT", "FF"])
+        bandwidth_summary = tabulate([[
+            self.eval_throughput_in(),
+            self.eval_throughput_out(),
+            f"{self.eval_throughput_in()+self.eval_throughput_out()}/{1000*self.platform['bandwidth']}",
+        ]], headers=["in (Mbps)", "out (Mbps)", "total (Mbps)"])
 
         # print the summary
         print("Network Summary:\n----------------\n")
+        print(bandwidth_summary)
+        print("\n")
         print(layer_summary)
         print("\n")
         print(network_summary)
@@ -132,7 +144,7 @@ class Network(nx.DiGraph):
             node_config["kernel_folding"] = node_hw.kernel_folding
 
             network_config[node] = node_config
-            
+
         with open(config_path,"w") as f:
             json.dump(network_config,f,indent=2)
 

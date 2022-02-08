@@ -1,4 +1,5 @@
 models/
 outputs/
+run.sh
 
 **/__pycache__/

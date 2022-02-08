@@ -8,6 +8,10 @@ class FPGAConvNetWrapper(Node):
         # store the fpgaconvnet layer
         self.layer = layer
 
+        # get the size in and out
+        self.size_in = layer.rows_in()*layer.cols_in()*layer.channels_in()
+        self.size_out = layer.rows_out()*layer.cols_out()*layer.channels_out()
+
         # get the channels in and out for the layer
         self.channels_in    = layer.channels_in()
         self.channels_out   = layer.channels_out()

@@ -8,6 +8,8 @@ def get_factors(n):
 
 @dataclass
 class Node:
+    size_in: int
+    size_out: int
     channels_in: int
     channels_out: int
     kernel_size: int = 1

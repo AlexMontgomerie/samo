@@ -50,7 +50,7 @@ def main():
         raise NameError
 
     # update the platform resource constraints
-    opt.network.platform = platform["resources"]
+    opt.network.platform = platform
 
     # run the optimiser
     opt.optimise()

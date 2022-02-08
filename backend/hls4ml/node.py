@@ -20,6 +20,10 @@ class HLS4MLNodeWrapper(Node):
         # save layer type settings
         self.layer_type = type(layer)
 
+        # get the size of input and output featuremaps
+        self.size_in    = np.prod(layer.get_input_variable().shape)
+        self.size_out   = np.prod(layer.get_output_variable().shape)
+
         # get the channel dimensions
         self.channels_in    = layer.get_input_variable().shape[-1]
         self.channels_out   = layer.get_output_variable().shape[-1]
