@@ -50,16 +50,29 @@ def main():
         raise NameError
 
     # update the platform resource constraints
-    opt.network.platform = platform
+    opt.network.load_platform(platform)
+
+    # split up the network completely
+    can_split = True
+    while can_split:
+        can_split = False
+        for i in range(len(opt.network.partitions)):
+            valid_splits = opt.network.valid_splits(i)
+            if valid_splits:
+                can_split = True
+                opt.network.split(i, valid_splits[0])
 
     # run the optimiser
     opt.optimise()
 
+    # validate generated design
+    assert(opt.network.check_constraints())
+
     # print a summary of the run
     opt.network.summary()
 
-    # export the design
-    exporter.export(opt.network, args.model, args.output_path)
+    # # export the design
+    # exporter.export(opt.network, args.model, args.output_path)
 
 if __name__ == "__main__":
     main()

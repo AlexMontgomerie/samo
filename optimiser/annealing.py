@@ -19,26 +19,49 @@ class SimulatedAnnealing:
     valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
     def update(self):
-        for index, layer in enumerate(self.network):
-            self.network.nodes[layer]["hw"].update()
+        for partition in self.network.partitions:
+            for index, layer in enumerate(partition):
+                partition.nodes[layer]["hw"].update(hw_update=True)
 
     def random_transformation(self):
-        # pick a random layer
-        layer = random.choices(list(self.network.nodes()))[0]
-        node_hw = self.network.nodes[layer]["hw"]
-        # pick a random variable
-        variable = random.choices(self.valid_variables)[0]
-        # apply a random value to that variable (within constraints)
-        if variable == "channel_in_folding":
-            folding = random.choices(node_hw.valid_channel_in_folding)[0]
-            node_hw.channel_in_folding = folding
-            self.network.folding_match(layer, folding, "io")
-        elif variable == "channel_out_folding":
-            folding = random.choices(node_hw.valid_channel_out_folding)[0]
-            node_hw.channel_out_folding = folding
-            self.network.folding_match(layer, folding, "io")
-        elif variable == "kernel_folding":
-            node_hw.kernel_folding = random.choices(node_hw.valid_kernel_folding)[0]
+        # pick a random partition
+        partition = random.choice(self.network.partitions)
+        transform = np.random.choice(["partition", "variable"], p=[0.05,0.95])
+        # pick a random transform
+        if transform == "partition":
+            transform_type = random.choice(["split", "merge"])
+            if transform_type == "split":
+                # get partition index
+                partition_index = self.network.partitions.index(partition)
+                # choose random split nodes
+                valid_splits = self.network.valid_splits(partition_index)
+                if valid_splits:
+                    nodes = random.choice(valid_splits)
+                    # apply split
+                    self.network.split(partition_index, nodes)
+            elif transform_type == "merge":
+                # choose random merge
+                valid_merges = self.network.valid_merges()
+                if valid_merges:
+                    merge = random.choice(valid_merges)
+                    self.network.merge(merge)
+        else:
+            # pick a random layer
+            layer = random.choice(list(partition.nodes()))
+            node_hw = partition.nodes[layer]["hw"]
+            # pick a random variable
+            variable = random.choices(self.valid_variables)[0]
+            # apply a random value to that variable (within constraints)
+            if variable == "channel_in_folding":
+                folding = random.choices(node_hw.valid_channel_in_folding)[0]
+                node_hw.channel_in_folding = folding
+                partition.folding_match(layer, folding, "io")
+            elif variable == "channel_out_folding":
+                folding = random.choices(node_hw.valid_channel_out_folding)[0]
+                node_hw.channel_out_folding = folding
+                partition.folding_match(layer, folding, "io")
+            elif variable == "kernel_folding":
+                node_hw.kernel_folding = random.choices(node_hw.valid_kernel_folding)[0]
 
     def optimise(self):
 
@@ -75,7 +98,7 @@ class SimulatedAnnealing:
 
             # log the current resources and latency
             new_latency = self.network.eval_latency()
-            new_resource = self.network.eval_resource()
+            # new_resource = self.network.eval_resource()
             chosen = True
 
             # perform the annealing descision
@@ -87,15 +110,15 @@ class SimulatedAnnealing:
             # reduce temperature
             self.T *= self.cool
 
-            # update the log
-            log += [[
-                    new_latency,
-                    new_resource["BRAM"],
-                    new_resource["DSP"],
-                    new_resource["LUT"],
-                    new_resource["FF"],
-                    chosen
-            ]]
+            # # update the log
+            # log += [[
+            #         new_latency,
+            #         new_resource["BRAM"],
+            #         new_resource["DSP"],
+            #         new_resource["LUT"],
+            #         new_resource["FF"],
+            #         chosen
+            # ]]
 
         # write log to a file
         with open("outputs/log.csv", "w") as f:
