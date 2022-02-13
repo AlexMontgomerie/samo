@@ -62,6 +62,15 @@ def main():
                 can_split = True
                 opt.network.split(i, valid_splits[0])
 
+    print(len(opt.network.partitions))
+
+    # for p in opt.network.partitions:
+    #     print(p.nodes, p.edges,
+    #             p.nodes[p.input_node]["hw"].channel_in_folding,
+    #             p.nodes[p.input_node]["hw"].channel_out_folding,
+    #             p.nodes[p.input_node]["hw"].kernel_folding
+    #             )
+
     # run the optimiser
     opt.optimise()
 

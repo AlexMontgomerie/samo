@@ -24,9 +24,10 @@ class SimulatedAnnealing:
                 partition.nodes[layer]["hw"].update(hw_update=True)
 
     def random_transformation(self):
+        # choose to do a partitioning transform of change a variable
+        transform = np.random.choice(["partition", "variable"], p=[0.1,0.9])
         # pick a random partition
         partition = random.choice(self.network.partitions)
-        transform = np.random.choice(["partition", "variable"], p=[0.05,0.95])
         # pick a random transform
         if transform == "partition":
             transform_type = random.choice(["split", "merge"])
@@ -91,10 +92,14 @@ class SimulatedAnnealing:
             # update the network
             self.update()
 
+            # for partition in self.network.partitions:
+            #     print(partition.eval_latency(), partition.eval_resource())
+
             # check the network is within platform resource constraints
             if not self.network.check_constraints():
                 self.network = network_copy
                 continue
+
 
             # log the current resources and latency
             new_latency = self.network.eval_latency()
