@@ -13,7 +13,7 @@ class RuleBased:
 
     def update(self):
         for index, layer in enumerate(self.network):
-            self.network.nodes[layer]["hw"].update()
+            self.network.nodes[layer]["hw"].update(hw_update=True)
 
     def optimise(self):
         step = True
