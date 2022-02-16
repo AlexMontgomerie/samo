@@ -45,6 +45,9 @@ class Network:
         for index, partition in enumerate(self.partitions):
             print(f"Partition {index}:\n------------\n")
             partition.summary()
+        print(f"Network Summary:\n------------\n")
+        print(f"Total Latency: {self.eval_latency()}")
+        print("\n")
 
     def split(self, partition_index, nodes):
         # get the node indices

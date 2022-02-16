@@ -106,7 +106,6 @@ class Partition(nx.DiGraph):
         ]], headers=["in (Mbps)", "out (Mbps)", "total (Mbps)"])
 
         # print the summary
-        print("Network Summary:\n----------------\n")
         print(bandwidth_summary)
         print("\n")
         print(layer_summary)
