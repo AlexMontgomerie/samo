@@ -28,12 +28,13 @@ class SimulatedAnnealing:
         transform = np.random.choice(["partition", "variable"], p=[0.1,0.9])
         # pick a random partition
         partition = random.choice(self.network.partitions)
+        # get partition index
+        partition_index = self.network.partitions.index(partition)
+
         # pick a random transform
         if transform == "partition":
             transform_type = random.choice(["split", "merge"])
             if transform_type == "split":
-                # get partition index
-                partition_index = self.network.partitions.index(partition)
                 # choose random split nodes
                 valid_splits = self.network.valid_splits(partition_index)
                 if valid_splits:
@@ -56,11 +57,11 @@ class SimulatedAnnealing:
             if variable == "channel_in_folding":
                 folding = random.choices(node_hw.valid_channel_in_folding)[0]
                 node_hw.channel_in_folding = folding
-                partition.folding_match(layer, folding, "io")
+                self.network.folding_match(partition_index, layer, folding, "io")
             elif variable == "channel_out_folding":
                 folding = random.choices(node_hw.valid_channel_out_folding)[0]
                 node_hw.channel_out_folding = folding
-                partition.folding_match(layer, folding, "io")
+                self.network.folding_match(partition_index, layer, folding, "io")
             elif variable == "kernel_folding":
                 node_hw.kernel_folding = random.choices(node_hw.valid_kernel_folding)[0]
 

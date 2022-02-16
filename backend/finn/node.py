@@ -20,6 +20,8 @@ class FinnNodeWrapper(Node):
                              "matching_inter_folding": finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"],
                              "divisible_inter_folding": finn_node.onnx_node.op_type in ["StreamingFCLayer_Batch"]}
 
+        self.split = finn_node.onnx_node.op_type in ["StreamingFCLayer_Batch", "Vector_Vector_Activate_Batch"]
+
     def update(self, hw_update=False):
         if hw_update:
             if get_by_name(self.finn_node.onnx_node.attribute, "SIMD") is not None:

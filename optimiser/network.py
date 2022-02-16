@@ -108,4 +108,61 @@ class Network:
             merges.append((i-1,i))
         return merges
 
+    def get_ancestor_node(self, partition_index, node):
+        partition = self.partitions[partition_index]
+
+        if partition.input_node == node:
+            if partition_index != 0:
+                return (partition_index-1, self.partitions[partition_index-1].output_node)
+            else:
+                return None
+        else:
+            return (partition_index, list(partition.predecessors(node))[0])
+
+    def get_descendant_node(self, partition_index, node):
+        partition = self.partitions[partition_index]
+
+        if partition.output_node == node:
+            if partition_index != len(self.partitions)-1:
+                return (partition_index+1, self.partitions[partition_index+1].input_node)
+            else:
+                return None
+        else:
+            return (partition_index, list(partition.successors(node))[0])
+
+    def folding_match(self, partition_index, node, folding, direction):
+        partition = self.partitions[partition_index]
+        node_hw = partition.nodes[node]["hw"]
+
+        if node_hw.constraints["matching_intra_folding"]:
+            node_hw.channel_in_folding = folding
+            node_hw.channel_out_folding = folding
+
+        channel_in_folding = node_hw.channel_in_folding
+        channel_out_folding = node_hw.channel_out_folding
+        
+        ancestor = self.get_ancestor_node(partition_index, node)
+        descendant = self.get_descendant_node(partition_index, node)
+
+        if ancestor and "i" in direction:
+            prev_partition_index, prev_node = ancestor
+            prev_partition = self.partitions[prev_partition_index]
+            prev_node_hw = prev_partition.nodes[prev_node]["hw"]
+            
+            prev_channel_out_folding = prev_node_hw.channel_out_folding
+            if prev_node_hw.constraints["matching_inter_folding"] or \
+               prev_node_hw.constraints["divisible_inter_folding"] and max(channel_in_folding, prev_channel_out_folding) % min(channel_in_folding, prev_channel_out_folding) != 0:
+                prev_node_hw.channel_out_folding = channel_in_folding
+                self.folding_match(prev_partition_index, prev_node, channel_in_folding, "i")
+
+        if descendant and "o" in direction:
+            next_partition_index, next_node = descendant
+            next_partition = self.partitions[next_partition_index]
+            next_node_hw = next_partition.nodes[next_node]["hw"]
+
+            next_channel_in_folding = next_node_hw.channel_in_folding
+            if node_hw.constraints["matching_inter_folding"] or \
+               node_hw.constraints["divisible_inter_folding"] and max(channel_out_folding, next_channel_in_folding) % min(channel_out_folding, next_channel_in_folding) != 0:
+                next_node_hw.channel_in_folding = channel_out_folding
+                self.folding_match(next_partition_index, next_node, channel_out_folding, "o")
 
