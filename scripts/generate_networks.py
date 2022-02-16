@@ -166,7 +166,36 @@ alexnet = keras.Sequential(
 
 # save the model
 alexnet.save("models/alexnet.keras")
-onnx.save(onnxmltools.convert_keras(alexnet, target_opset=9), "models/alexnet.onnx")
+onnx.save(onnxmltools.convert_keras(alexnet, target_opset=9,channel_first_inputs=['zero_padding2d_input']), "models/alexnet.onnx")
+
+"""
+AlexNet-MP2
+"""
+
+alexnet_mp2 = keras.Sequential(
+    [
+        layers.ZeroPadding2D(padding=(4,4), input_shape=[224, 224, 3]),
+        layers.Conv2D(64, 11, strides=(4,4), activation="relu", name="conv1"),
+        layers.MaxPooling2D(pool_size=(2,2), strides=(2,2), name="pool1"),
+
+        layers.Conv2D(192, 5, padding='same', activation="relu", name="conv2"),
+        layers.MaxPooling2D(pool_size=(2,2), strides=(2,2), name="pool2"),
+
+        layers.Conv2D(384, 3, padding='same', activation="relu", name="conv3"),
+        layers.Conv2D(256, 3, padding='same', activation="relu", name="conv4"),
+        layers.Conv2D(256, 3, padding='same', activation="relu", name="conv5"),
+        layers.MaxPooling2D(pool_size=(2,2), strides=(2,2), name="pool3"),
+        
+        layers.Flatten(),
+        layers.Dense(4096, name="ip1"),
+        layers.Dense(4096, name="ip2"),
+        layers.Dense(1000, name="ip3")
+    ], name="alexnet_mp2"
+)
+
+# save the model
+alexnet_mp2.save("models/alexnet_mp2.keras")
+onnx.save(onnxmltools.convert_keras(alexnet_mp2, target_opset=9,channel_first_inputs=['zero_padding2d_input']), "models/alexnet_mp2.onnx")
 
 """
 VGG-11
@@ -201,7 +230,7 @@ vgg11 = keras.Sequential(
 
 # save the model
 vgg11.save("models/vgg11.keras")
-onnx.save(onnxmltools.convert_keras(vgg11, target_opset=9), "models/vgg11.onnx")
+onnx.save(onnxmltools.convert_keras(vgg11, target_opset=9,channel_first_inputs=['conv1_input']), "models/vgg11.onnx")
 
 
 """
@@ -252,4 +281,4 @@ mobilenetv1 = keras.Sequential(
 
 # save the model
 mobilenetv1.save("models/mobilenetv1.keras")
-onnx.save(onnxmltools.convert_keras(mobilenetv1, target_opset=9), "models/mobilenetv1.onnx")
+onnx.save(onnxmltools.convert_keras(mobilenetv1, target_opset=9,channel_first_inputs=['conv1_input']), "models/mobilenetv1.onnx")
