@@ -61,4 +61,10 @@ class Node:
              "FF" : 0
         }
 
+    def reset(self):
+        self.channel_in_folding = 1
+        self.channel_out_folding = 1
+        self.kernel_folding = 1
+
+        self.update(hw_update=True)
 

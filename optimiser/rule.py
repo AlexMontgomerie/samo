@@ -12,28 +12,28 @@ class RuleBased:
     network: Network
 
     def update(self):
-        for index, layer in enumerate(self.network):
-            self.network.nodes[layer]["hw"].update(hw_update=True)
+        for partition in self.network.partitions:
+            for index, layer in enumerate(partition):
+                partition.nodes[layer]["hw"].update(hw_update=True)
 
-    def optimise(self):
+    def optimise_single_partition(self, partition_index):
+        print(f"Partition {partition_index}:\n------------\n")
+
+        if not self.network.partitions[partition_index].check_constraints():
+            return False
+
         step = True
-
-        def generator():
-            while step:
-                yield
-
         log = []
-
-        pbar = tqdm(generator())
-        for _ in pbar:
+        while step:
             step = False
+            partition = self.network.partitions[partition_index]
 
             latency = self.network.eval_latency()
-            node_latencys = np.array([ self.network.nodes[layer]["hw"].latency() for layer in list(self.network.nodes())])
+            node_latencys = np.array([ partition.nodes[layer]["hw"].latency() for layer in list(partition.nodes())])
             #print(node_latencys)
             node_index = np.argsort(node_latencys)[-1]
-            layer = list(self.network.nodes())[node_index]
-            node_hw = self.network.nodes[layer]["hw"]
+            layer = list(partition.nodes())[node_index]
+            node_hw = partition.nodes[layer]["hw"]
 
             layer_configurations = list(itertools.product(
                 node_hw.valid_channel_in_folding,
@@ -60,18 +60,25 @@ class RuleBased:
                 step_candidates = {}
                 next_folding_candidates = []
 
+                prev_throughput_in = partition.eval_throughput_in()
+                prev_throughput_out = partition.eval_throughput_out()
+                try_merge_prev = False
+                try_merge_next = False
+
                 for config in layer_configurations:
                     # only explore the next and closest folding
                     if len(next_folding_candidates) > 1:
                         break
 
+                    partition = self.network.partitions[partition_index]
+
                     network_copy = copy.deepcopy(self.network)
-                    node_hw = self.network.nodes[layer]["hw"]
+                    node_hw = partition.nodes[layer]["hw"]
 
                     node_hw.channel_in_folding = config[0]
-                    self.network.folding_match(layer, config[0], "io")
+                    partition.folding_match(layer, config[0], "io")
                     node_hw.channel_out_folding = config[1]
-                    self.network.folding_match(layer, config[1], "io")
+                    partition.folding_match(layer, config[1], "io")
                     node_hw.kernel_folding = config[2]
 
                     # update the network
@@ -82,6 +89,14 @@ class RuleBased:
                         step_candidates[config] = copy.deepcopy(self.network)
                         next_folding_candidates.append(np.prod(config))
                         next_folding_candidates = list(set(next_folding_candidates))
+                    elif not partition.check_memory_bandwdith_constraint():
+                        curr_throughput_in = partition.eval_throughput_in()
+                        curr_throughput_out = partition.eval_throughput_out()
+
+                        if curr_throughput_in > prev_throughput_in:
+                            try_merge_prev = True
+                        if curr_throughput_out > prev_throughput_out:
+                            try_merge_next = True
 
                     self.network = network_copy
             
@@ -89,14 +104,14 @@ class RuleBased:
 
                 # choose the transformation with minimal resource                
                 chosen = True
-                sorted_candidates = dict(sorted(step_candidates.items(), key=lambda kv: kv[1].avg_rsc_util()))
+                sorted_candidates = dict(sorted(step_candidates.items(), key=lambda kv: kv[1].partitions[partition_index].avg_rsc_util()))
                 for config, network in sorted_candidates.items():
                     if chosen:
                         self.network = network
                     
                     # log the current resources and latency
                     new_latency = self.network.eval_latency()
-                    new_resource = self.network.eval_resource()
+                    new_resource = self.network.partitions[partition_index].eval_resource()
 
                     # update the log
                     log += [[
@@ -111,8 +126,74 @@ class RuleBased:
                     ]]
 
                     chosen = False
+            else:
+
+                try_merge_prev = True
+                try_merge_next = True
+
+        self.network.partitions[partition_index].try_merge_prev = try_merge_prev  
+        self.network.partitions[partition_index].try_merge_next = try_merge_next  
 
         # write log to a file
-        with open("outputs/log.csv", "w") as f:
+        with open("outputs/log_{}.csv".format(partition_index), "w") as f:
             writer = csv.writer(f)
             [ writer.writerow(row) for row in log ]
+
+        self.network.partitions[partition_index].summary()
+
+        return True
+
+    def merge_partitions(self):
+        print("resolving memory bound partitions")
+        reject_list = []
+
+        while True:
+            partitions = copy.deepcopy(self.network.partitions)
+            latency = self.network.eval_latency()
+
+            merge_prev_candidates = []
+            merge_next_candidates = []
+
+            for partition_index, partition in enumerate(self.network.partitions):
+                if partition_index != 0 and partition.try_merge_prev and (partition_index-1, partition_index) not in reject_list:
+                    merge_prev_candidates.append(partition_index)
+                if partition_index != len(self.network.partitions)-1 and partition.try_merge_next and (partition_index, partition_index+1) not in reject_list:
+                    merge_next_candidates.append(partition_index)
+
+            merge_total_candidates = merge_prev_candidates + merge_next_candidates
+            merge_total_candidates = list(set(merge_total_candidates))
+
+            if len(merge_total_candidates) == 0:
+                break
+
+            partition_latencys = [ self.network.partitions[partition_index].eval_latency() for partition_index in merge_total_candidates]
+            partition_index    = merge_total_candidates[partition_latencys.index(max(partition_latencys))]
+            
+            if partition_index in merge_next_candidates:
+                merge_pair = (partition_index, partition_index+1)
+            elif partition_index in merge_prev_candidates:
+                merge_pair = (partition_index-1, partition_index)
+
+            print(merge_pair)
+
+            self.network.partitions[merge_pair[0]].reset()
+            self.network.partitions[merge_pair[1]].reset()
+            self.network.merge(merge_pair)
+            status = self.optimise_single_partition(merge_pair[0])
+
+            if not status or self.network.eval_latency() >= latency:
+                self.network.partitions = partitions
+                reject_list.append(merge_pair)
+                print("reject")
+            else:
+                for i, merge in enumerate(reject_list):
+                    if merge[0] >= merge_pair[1]:
+                        reject_list[i] = (merge[0]-1,merge[1]-1)
+                print("accept")
+
+            print("*******")
+    def optimise(self):
+        for partition_index in range(len(self.network.partitions)):
+            self.optimise_single_partition(partition_index)
+
+        self.merge_partitions()

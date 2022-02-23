@@ -60,12 +60,20 @@ class Partition(nx.DiGraph):
     def check_memory_bandwdith_constraint(self):
         return (self.eval_throughput_in() + self.eval_throughput_out()) < 1000*float(self.platform["bandwidth"])
 
+    def check_matching_inter_folding(self, node, next_node):
+        return self.nodes[node]["hw"].channel_out_folding == self.nodes[next_node]["hw"].channel_in_folding
+
     def check_constraints(self):
         # check all the constraints (if they are required)
         for node in self.nodes:
             # print(node, self.nodes[node]["hw"].check_constraints())
             if not self.nodes[node]["hw"].check_constraints():
                 return False
+
+            if self.nodes[node]["hw"].constraints["matching_inter_folding"] and self.out_degree(node) > 0:
+                next_node = list(self.successors(node))[0]
+                assert self.check_matching_inter_folding(node, next_node)
+
         # check resource constraints
         resource_check = self.check_resource_constraints() if self.constraints["resource"] else True
         bandwidth_check = self.check_memory_bandwdith_constraint()
@@ -113,6 +121,33 @@ class Partition(nx.DiGraph):
         print(network_summary)
         print("\n\n")
 
+    def folding_match(self, node, folding, direction):
+        node_hw = self.nodes[node]["hw"]
+
+        if node_hw.constraints["matching_intra_folding"]:
+            node_hw.channel_in_folding = folding
+            node_hw.channel_out_folding = folding
+
+        channel_in_folding = node_hw.channel_in_folding
+        channel_out_folding = node_hw.channel_out_folding
+
+        if self.in_degree(node) > 0 and "i" in direction:
+            prev_node = list(self.predecessors(node))[0]
+            prev_channel_out_folding = self.nodes[prev_node]["hw"].channel_out_folding
+            if self.nodes[prev_node]["hw"].constraints["matching_inter_folding"] or \
+               self.nodes[prev_node]["hw"].constraints["divisible_inter_folding"] and max(channel_in_folding, prev_channel_out_folding) % min(channel_in_folding, prev_channel_out_folding) != 0:
+                self.nodes[prev_node]["hw"].channel_out_folding = channel_in_folding
+                self.folding_match(prev_node, channel_in_folding, "i")
+
+        if self.out_degree(node) > 0 and "o" in direction:
+            next_node = list(self.successors(node))[0]
+            next_channel_in_folding = self.nodes[next_node]["hw"].channel_in_folding
+            if node_hw.constraints["matching_inter_folding"] or \
+               node_hw.constraints["divisible_inter_folding"] and max(channel_out_folding, next_channel_in_folding) % min(channel_out_folding, next_channel_in_folding) != 0:
+                self.nodes[next_node]["hw"].channel_in_folding = channel_out_folding
+                self.folding_match(next_node, channel_out_folding, "o")
+
+
     def save_config(self, config_path):
         network_config = {}
         for node in self.nodes:
@@ -145,5 +180,8 @@ class Partition(nx.DiGraph):
             print("Loading a config that may violate constraints")
 
         for node in self.nodes:
-            self.nodes[node]["hw"].update()
+            self.nodes[node]["hw"].update(hw_update=True)
 
+    def reset(self):
+        for node in self.nodes:
+            self.nodes[node]["hw"].reset()

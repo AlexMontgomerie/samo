@@ -28,6 +28,10 @@ def main():
     # parse the network
     graph = parser.parse(args.model)
 
+    # init
+    for partition in graph.partitions:
+        partition.reset()
+
     # parse the platform
     with open(args.platform, "r") as f:
         platform = json.load(f)
@@ -61,6 +65,9 @@ def main():
             if valid_splits:
                 can_split = True
                 opt.network.split(i, valid_splits[0])
+
+    # validate starting point
+    assert(opt.network.check_constraints())
 
     # run the optimiser
     # opt.optimise()

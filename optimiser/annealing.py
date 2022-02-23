@@ -57,11 +57,11 @@ class SimulatedAnnealing:
             if variable == "channel_in_folding":
                 folding = random.choices(node_hw.valid_channel_in_folding)[0]
                 node_hw.channel_in_folding = folding
-                self.network.folding_match(partition_index, layer, folding, "io")
+                partition.folding_match(layer, folding, "io")
             elif variable == "channel_out_folding":
                 folding = random.choices(node_hw.valid_channel_out_folding)[0]
                 node_hw.channel_out_folding = folding
-                self.network.folding_match(partition_index, layer, folding, "io")
+                partition.folding_match(layer, folding, "io")
             elif variable == "kernel_folding":
                 node_hw.kernel_folding = random.choices(node_hw.valid_kernel_folding)[0]
 
