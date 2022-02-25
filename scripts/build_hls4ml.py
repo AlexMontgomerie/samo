@@ -1,6 +1,7 @@
 import shutil
 import argparse
 import json
+import os
 
 import hls4ml
 from tensorflow import keras
@@ -19,38 +20,44 @@ def main():
             help="hardware platform details (.json)")
     parser.add_argument("-o", "--output-path", metavar="PATH", required=True,
             help="output path for HLS implementation")
+
+    # parse the arugment
     args = parser.parse_args()
 
     # clean any existing project
     shutil.rmtree(args.output_path, ignore_errors=True)
 
-    # load the configuration
-    with open(args.config_path, "r") as f:
-        config = json.load(f)
-
     # load the platform path
     with open(args.platform, "r") as f:
         platform = json.load(f)
 
-    # load the keras model
-    model = keras.models.load_model(args.model_path)
+    # load the reference keras model
+    ref_model = keras.models.load_model(args.model_path)
+
+    # load the configuration
+    with open(args.config_path, "r") as f:
+        config = json.load(f)
+
+    # create a sub model
+    model = keras.Sequential()
+    first = True
+    for node in ref_model.layers:
+        if node.name in config["LayerName"]:
+            if first:
+                model.add(keras.Input(shape=node.input_shape))
+                first = False
+            model.add(node)
+
+    # end if the model is empty
+    if len(model.layers) == 0:
+        print("can't implement the network")
+        return
 
     # create the hls model
     hls_model = hls4ml.converters.convert_from_keras_model(model, hls_config=config,
-            output_dir=args.output_path,  io_type="io_stream", part=platform["part"])
+            output_dir=args.output_path, io_type="io_stream", part=platform["part"])
 
-    # parse the model for same
-    net = parse(args.model_path)
-
-    #update network kernel folding:
-    for node in config["LayerName"]:
-        if node in net.nodes:
-            net.nodes[node]["hw"].kernel_folding = config["LayerName"][node]["ReuseFactor"]
-            print(net.nodes[node]["hw"].kernel_folding)
-    # report the estimates
-    net.summary()
-
-    # # build the hls
+    # build the hls
     hls_model.build(csim=True, cosim=True)
 
     # get the reports
