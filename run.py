@@ -19,6 +19,8 @@ def main():
             help="output path for the optimised model (.json, .onnx)")
     parser.add_argument("--optimiser", choices=["brute", "annealing", "init", "rule"], required=False, default="annealing",
             help="optimiser to use")
+    parser.add_argument("--enable_reconf", choices=["true", "false"], required=False, default="false", help="multiple partitions")
+
     args = parser.parse_args()
 
     # get the backend parser and exporter
@@ -27,6 +29,8 @@ def main():
 
     # parse the network
     graph = parser.parse(args.model)
+
+    graph.enable_reconf = {"true":True, "false":False}[args.enable_reconf]
 
     # init
     for partition in graph.partitions:

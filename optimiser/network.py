@@ -16,6 +16,7 @@ class Network:
     def __init__(self, reference):
         self.reference = reference
         self.partitions = [copy.deepcopy(reference)]
+        self.enable_reconf = True
 
     def load_platform(self, platform):
         # load for all partitions
@@ -81,7 +82,10 @@ class Network:
         self.partitions.insert(partition_index, p0)
 
     def valid_splits(self, partition_index):
-        return list(self.partitions[partition_index].edges)
+        if self.enable_reconf:
+            return list(self.partitions[partition_index].edges)
+        else:
+            return []
 
     def merge(self, partitions):
         # get the partitions
