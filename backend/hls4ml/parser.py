@@ -8,7 +8,7 @@ from optimiser import Partition
 from .node import HLS4MLNodeWrapper
 from .network import HLS4MLNetworkWrapper
 
-def parse(filepath):
+def parse(filepath, platform):
 
     # load keras model
     model = keras.models.load_model(filepath)
@@ -18,6 +18,7 @@ def parse(filepath):
 
     # convert into the node wrappers
     reference = Partition()
+    reference.platform = platform
     prev_node = None
     for node in hls_model.graph:
         if type(hls_model.graph[node]) == hls4ml.model.hls_layers.Input:

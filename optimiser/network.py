@@ -18,11 +18,6 @@ class Network:
         self.partitions = [copy.deepcopy(reference)]
         self.enable_reconf = True
 
-    def load_platform(self, platform):
-        # load for all partitions
-        for partition in self.partitions:
-            partition.platform = copy.deepcopy(platform)
-
     def eval_latency(self):
         return sum([ partition.eval_latency() for partition in self.partitions ])
 

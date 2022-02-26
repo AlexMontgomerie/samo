@@ -23,22 +23,23 @@ def main():
 
     args = parser.parse_args()
 
+    # parse the platform
+    with open(args.platform, "r") as f:
+        platform = json.load(f)
+
     # get the backend parser and exporter
     parser = importlib.import_module(f"backend.{args.backend}.parser")
     exporter = importlib.import_module(f"backend.{args.backend}.export")
 
     # parse the network
-    graph = parser.parse(args.model)
+    graph = parser.parse(args.model, platform)
 
     graph.enable_reconf = {"true":True, "false":False}[args.enable_reconf]
 
     # init
     for partition in graph.partitions:
         partition.reset()
-
-    # parse the platform
-    with open(args.platform, "r") as f:
-        platform = json.load(f)
+        print(partition.platform)
 
     # create an optimiser instance for the network
     if args.optimiser == "annealing":
@@ -56,9 +57,6 @@ def main():
         return
     else:
         raise NameError
-
-    # update the platform resource constraints
-    opt.network.load_platform(platform)
 
     # split up the network completely
     can_split = True
