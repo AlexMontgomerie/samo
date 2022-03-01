@@ -3,11 +3,14 @@ from finn.custom_op.registry import getCustomOp
 from finn.util.basic import get_by_name
 
 def export(network, model_path, output_path):
+    if len(network.partitions) > 1:
+        return 
+
     model = ModelWrapper(model_path)
 
     for i, finn_node in enumerate(model.graph.node):
-        node = list(network.nodes())[i]
-        layer = network.nodes[node]["hw"]
+        node = list(network.partitions[0].nodes())[i]
+        layer = network.partitions[0].nodes[node]["hw"]
         finn_node = getCustomOp(finn_node)
 
         if get_by_name(finn_node.onnx_node.attribute, "SIMD") is not None:

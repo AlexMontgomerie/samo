@@ -12,7 +12,7 @@ def generate_finn_config(model_path, platform, freq, wordlength):
 
     model_zoo = ["simple","lenet","tfc","sfc","lfc","mpcnn","mobilenetv1","cnv","vgg11"]
     for model_name in model_zoo:
-        if model_name in model_path:
+        if model_name+"_pre_optimiser" in model_path:
             break
 
     config = {
@@ -20,7 +20,7 @@ def generate_finn_config(model_path, platform, freq, wordlength):
         "brevitas_finn_onnx" : "brevitas_finn" in model_path,
         "weight_width" : wordlength,
         "acc_width": wordlength,
-        "device": {"u250":"U250","zc706":"ZC706","zedboard":"Zedboard"}[platform['name']],
+        "device": platform['name'],
         "clock_cycle": int(1000/freq)
     }
     json_path = "../finn/notebooks/samo/config.json"

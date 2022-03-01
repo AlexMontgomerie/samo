@@ -1,5 +1,5 @@
 {
-  "name" : "zedboard",
+  "name" : "Zedboard",
   "part" : "xc7z020clg484-1",
   "resources" : {
     "DSP"  : 220,

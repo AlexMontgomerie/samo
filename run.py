@@ -39,7 +39,6 @@ def main():
     # init
     for partition in graph.partitions:
         partition.reset()
-        print(partition.platform)
 
     # create an optimiser instance for the network
     if args.optimiser == "annealing":
@@ -67,6 +66,9 @@ def main():
             if valid_splits:
                 can_split = True
                 opt.network.split(i, valid_splits[0])
+
+    # validate generated design
+    assert(opt.network.check_constraints())
 
     # run the optimiser
     # opt.optimise()

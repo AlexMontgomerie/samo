@@ -78,7 +78,7 @@ class Partition(nx.DiGraph):
         resource_check = self.check_resource_constraints() if self.constraints["resource"] else True
         bandwidth_check = self.check_memory_bandwdith_constraint()
         # return resource_check and bandwidth_check
-        return resource_check
+        return resource_check and bandwidth_check
 
     def avg_rsc_util(self):
         resource = self.eval_resource()
