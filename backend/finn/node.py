@@ -17,8 +17,8 @@ class FinnNodeWrapper(Node):
 
         # set the matching folding constraint
         self.constraints = { "matching_intra_folding" : finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"],
-                             "matching_inter_folding": finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"],
-                             "divisible_inter_folding": finn_node.onnx_node.op_type in ["StreamingFCLayer_Batch"]}
+                             "matching_inter_folding": finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch", "DuplicateStreams_Batch"],
+                             "divisible_inter_folding": finn_node.onnx_node.op_type in ["StreamingFCLayer_Batch", "DuplicateStreams_Batch"],}
 
         self.split = finn_node.onnx_node.op_type in ["StreamingFCLayer_Batch", "Vector_Vector_Activate_Batch"]
 
