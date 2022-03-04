@@ -66,9 +66,6 @@ def main():
                 can_split = True
                 opt.network.split(i, valid_splits[0])
 
-    # validate starting point
-    assert(opt.network.check_constraints())
-
     # run the optimiser
     # opt.optimise()
 
