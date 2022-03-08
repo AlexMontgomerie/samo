@@ -48,9 +48,6 @@ def main():
     elif args.optimiser == "brute":
         opt = BruteForce(graph)
     elif args.optimiser == "init":
-        #graph.partitions[0].save_config("configs/resnet50_finn_baseline.json")
-        #graph.partitions[0].load_config("configs/resnet50_finn_baseline.json")
-
         graph.summary()
         exporter.export(graph, args.model, args.output_path)
         return
