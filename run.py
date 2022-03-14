@@ -55,7 +55,7 @@ def main():
         raise NameError
 
     # split up the network completely
-    can_split = True
+    can_split = args.optimiser != "brute"
     while can_split:
         can_split = False
         for i in range(len(opt.network.partitions)):
