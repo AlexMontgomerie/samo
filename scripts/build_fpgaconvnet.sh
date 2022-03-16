@@ -1,12 +1,32 @@
 #!/bin/bash
+current_dir=$PWD
+hardware_path=$current_dir/$1
+part=$2
 
-name="simple"
-model_path="models/simple.onnx"
-hardware_path="outputs/simple_fpgaconvnet.json"
+# change to the chisel directory
+cd $FPGACONVNET_CHISEL
 
-$FPGACONVNET_HLS/scripts/run_network.sh -n $name \
-    -m $model_path \
-    -p $hardware_path \
-    -b xilinx.com:zc706:part0:1.4 \
-    -f xcku115-flvb2104-2-i \
-    -s
+# get the number of partitions
+NUM_PARTITIONS=$( jq '.partition | length' $hardware_path )
+
+# iterate over partitions
+for i in $( seq 1 ${NUM_PARTITIONS}); do
+
+    # get current partition index
+    partition_index=$(( $i - 1))
+
+    # generate verilog
+    ./scripts/build_partition.sh $hardware_path $partition_index
+
+    # add attributes
+    python scripts/add_attributes.py impl/PartitionTop.v impl/PartitionTop_attr.v
+
+    # get resources
+    vivado -mode batch -source scripts/get_rsc_usage.tcl -tclargs PartitionTop_attr PartitionTop $part
+
+done
+
+# go back to directory
+cd $current_dir
+
+
