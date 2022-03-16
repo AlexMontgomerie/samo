@@ -22,20 +22,6 @@ def export(network, model_path, output_path):
             fpgaconvnet_net.partitions[-1].graph.nodes[node]["hw"] = \
                     network.partitions[partition_index].nodes[node]["hw"].layer
 
-    # # partition the hardware
-    # for partition_index in range(len(network.partitions)-1):
-    #     input_node = network.partitions[partition_index].output_node
-    #     output_node = network.partitions[partition_index+1].input_node
-    #     fpgaconvnet_net.split_horizontal(partition_index, (input_node, output_node))
-
-    # # iterate over the nodes of the optimised network, and
-    # # add them to the fpgaconvnet network
-    # for partition_index in range(len(network.partitions)):
-    #     for node in network.partitions[partition_index].nodes:
-    #         fpgaconvnet_net.partitions[partition_index].graph.nodes[node]["hw"] = \
-    #                 network.partitions[partition_index].nodes[node]["hw"].layer
-    print(len(fpgaconvnet_net.partitions), output_path)
-
     # update the network
     fpgaconvnet_net.update_partitions()
 

@@ -14,7 +14,8 @@ class Partition(nx.DiGraph):
                 "FF": 0,
                 "LUT": 0
             },
-            "bandwidth": 0.0
+            "bandwidth": 0.0,
+            "reconf_time": 0.0
         }
     constraints: dict = {"resource" : True, "inter_layer_matching" : True}
 

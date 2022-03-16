@@ -19,19 +19,15 @@ class Network:
         self.enable_reconf = True
 
     def eval_latency(self):
-        return sum([ partition.eval_latency() for partition in self.partitions ])
-
-    # def eval_latency(self):
-    #     return {
-    #         "BRAM" : max([ partition.eval_resource()["BRAM"] for partition in self.partitions ]),
-    #         "DSP"  : max([ partition.eval_resource()["DSP"] for partition in self.partitions ]),
-    #     }[ partition.eval_latency() for partition in self.partitions ])
+        """
+        returns in microseconds
+        """
+        return sum([ partition.eval_latency()/partition.freq for partition in self.partitions ]) + \
+                sum([ partition.platform["reconf_time"] for partition in self.partitions[:-1] ])
 
     def check_constraints(self):
         # check the partitions make up reference design
         # TODO
-        # for partition in self.partitions:
-        #     print(partition.check_constraints())
         # check constraints of all partitions
         return reduce(lambda a,b: a and b,
                 [ partition.check_constraints() for partition in self.partitions ])

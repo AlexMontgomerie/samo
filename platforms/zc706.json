@@ -7,5 +7,6 @@
     "FF"   : 437200,
     "LUT"  : 218600
   },
-  "bandwidth" : 68.224
+  "bandwidth" : 68.224,
+  "reconf_time" : 82550
 }
