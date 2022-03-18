@@ -68,14 +68,14 @@ class BruteForce:
             # update the network
             self.network = copy.deepcopy(network_init)
             self.update(config)
-            # evaluate the latency
-            latency  = self.network.eval_latency()
-            # if network is within constraints, log the network and it's latency
+            # evaluate the cost
+            cost  = self.network.eval_cost()
+            # if network is within constraints, log the network and it's cost
             if self.network.check_constraints():
-                valid_configs[config] = latency
+                valid_configs[config] = cost
 
-        # find the network with the lowest latency
-        best_config = min(valid_configs, key=valid_configs.get)
+        # find the network with the lowest cost
+        best_config = min(valid_configs, key=valid_configs.get_cost)
 
         # update with the best configuration
         self.network = copy.deepcopy(network_init)

@@ -81,7 +81,7 @@ class SimulatedAnnealing:
             pbar.set_description(desc=f"simulated annealing iterations (T={self.T:.3f})")
 
             # get the throughput of the current network state
-            latency = self.network.eval_latency()
+            cost = self.network.eval_cost()
 
             # keep a copy of the current network state
             network_copy = copy.deepcopy(self.network)
@@ -102,13 +102,12 @@ class SimulatedAnnealing:
                 continue
 
 
-            # log the current resources and latency
-            new_latency = self.network.eval_latency()
+            # log the current resources and cost
+            new_cost = self.network.eval_cost()
             # new_resource = self.network.eval_resource()
             chosen = True
 
             # perform the annealing descision
-            # print(math.exp(min(0,(latency - self.network.eval_latency())/(self.k*self.T))), latency-self.network.eval_latency(), self.T)
             if math.exp(min(0,(latency - new_latency)/(self.k*self.T))) < random.uniform(0,1):
                 self.network = network_copy
                 chosen = False

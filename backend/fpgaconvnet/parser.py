@@ -4,7 +4,7 @@ from optimiser import Network
 from optimiser import Partition
 import copy
 
-def parse(filepath, platform):
+def parse(filepath, platform, batch_size):
 
     # parse the network
     _, graph = parser.parse_net(filepath)
@@ -23,6 +23,7 @@ def parse(filepath, platform):
 
     # create network from reference design
     network = Network(reference)
+    network.batch_size = batch_size
 
     # return the wrapped network
     return network

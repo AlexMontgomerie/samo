@@ -8,9 +8,9 @@ from .node import FinnNodeWrapper
 import os
 import json
 
-def generate_finn_config(model_path, platform, freq, wordlength):
+def generate_finn_config(model_path, platform, freq, wordlength, batch_size):
 
-    model_zoo = ["simple","lenet","tfc","sfc","lfc","mpcnn","mobilenetv1","cnv","vgg11"]
+    model_zoo = ["simple","lenet","tfc","sfc","lfc","mpcnn","mobilenetv1","cnv"]
     for model_name in model_zoo:
         if model_name+"_pre_optimiser" in model_path:
             break
@@ -21,7 +21,8 @@ def generate_finn_config(model_path, platform, freq, wordlength):
         "weight_width" : wordlength,
         "acc_width": wordlength,
         "device": platform['name'],
-        "clock_cycle": int(1000/freq)
+        "clock_cycle": int(1000/freq),
+        "batch_size": batch_size
     }
     json_path = "../finn/notebooks/samo/config.json"
 
@@ -37,14 +38,14 @@ def generate_finn_config(model_path, platform, freq, wordlength):
     print("generating finn config. Exit")
     exit()
 
-def parse(filepath, platform):
+def parse(filepath, platform, batch_size):
     # create the computation graph
     reference = Partition()
     reference.platform = platform
-    reference.freq = 200.0
-    reference.wordlength = 1
+    reference.freq = 200.0 if platform['name'] == "U250" else 100.0
+    reference.wordlength = 4
 
-    generate_finn_config(filepath, reference.platform, reference.freq, reference.wordlength)
+    generate_finn_config(filepath, reference.platform, reference.freq, reference.wordlength, batch_size)
 
     model = ModelWrapper(filepath)
 
@@ -74,6 +75,7 @@ def parse(filepath, platform):
 
     # create network from reference design
     network = FinnNetworkWrapper(reference)
+    network.batch_size = batch_size
 
     return network
 

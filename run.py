@@ -1,6 +1,7 @@
 import argparse
 import importlib
 import json
+import copy
 
 from optimiser.annealing import SimulatedAnnealing
 from optimiser.rule import RuleBased
@@ -19,9 +20,12 @@ def main():
             help="output path for the optimised model (.json, .onnx)")
     parser.add_argument("--optimiser", choices=["brute", "annealing", "init", "rule"], required=False, default="annealing",
             help="optimiser to use")
+    parser.add_argument('--objective', choices=['throughput','latency'], required=False, default="latency", help='Optimiser objective')
     parser.add_argument("--enable_reconf", choices=["true", "false"], required=False, default="false", help="multiple partitions")
 
     args = parser.parse_args()
+
+    batch_size = 256 if args.objective == 'throughput' else 1
 
     # parse the platform
     with open(args.platform, "r") as f:
@@ -32,9 +36,10 @@ def main():
     exporter = importlib.import_module(f"backend.{args.backend}.export")
 
     # parse the network
-    graph = parser.parse(args.model, platform)
+    graph = parser.parse(args.model, platform, batch_size)
 
     graph.enable_reconf = {"true":True, "false":False}[args.enable_reconf]
+    graph.objective = args.objective
 
     # init
     for partition in graph.partitions:
@@ -60,9 +65,13 @@ def main():
         can_split = False
         for i in range(len(opt.network.partitions)):
             valid_splits = opt.network.valid_splits(i)
+            network_copy = copy.deepcopy(opt.network)
             if valid_splits:
                 can_split = True
                 opt.network.split(i, valid_splits[0])
+                if not opt.network.check_constraints():
+                    can_split = False
+                    opt.network = network_copy
 
     # validate generated design
     assert(opt.network.check_constraints())

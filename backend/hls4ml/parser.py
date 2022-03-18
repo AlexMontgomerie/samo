@@ -8,7 +8,7 @@ from optimiser import Partition
 from .node import HLS4MLNodeWrapper
 from .network import HLS4MLNetworkWrapper
 
-def parse(filepath, platform):
+def parse(filepath, platform, batch_size):
 
     # load keras model
     model = keras.models.load_model(filepath)
@@ -32,6 +32,7 @@ def parse(filepath, platform):
 
     # create network from reference design
     network = Network(reference)
+    network.batch_size = batch_size
 
     # return the wrapped network
     return network

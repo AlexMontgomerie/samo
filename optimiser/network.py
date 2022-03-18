@@ -25,6 +25,15 @@ class Network:
         return sum([ partition.eval_latency()/partition.freq for partition in self.partitions ]) + \
                 sum([ partition.platform["reconf_time"] for partition in self.partitions[:-1] ])
 
+    def eval_throughput(self):
+        return float(self.batch_size)/self.eval_latency()
+
+    def eval_cost(self):
+        if self.objective == "throughput":
+            return -self.eval_throughput()
+        elif self.objective == "latency":
+            return self.eval_latency()
+
     def check_constraints(self):
         # check the partitions make up reference design
         # TODO
@@ -38,7 +47,10 @@ class Network:
             print(f"Partition {index}:\n------------\n")
             partition.summary()
         print(f"Network Summary:\n------------\n")
-        print(f"Total Latency: {self.eval_latency()}")
+        print(f"Objective: {self.objective}")
+        print(f"Batch Size: {self.batch_size} (img/batch)")
+        print(f"Total Latency: {self.eval_latency()} (ms/batch)")
+        print(f"Total Throughput: {self.eval_throughput()} (img/ms)")
         print("\n")
 
     def split(self, partition_index, nodes):

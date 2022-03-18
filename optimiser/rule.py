@@ -28,9 +28,9 @@ class RuleBased:
             step = False
             partition = self.network.partitions[partition_index]
 
-            latency = self.network.eval_latency()
+            cost = self.network.eval_cost()
             node_latencys = np.array([ partition.nodes[layer]["hw"].latency() for layer in list(partition.nodes())])
-            #print(node_latencys)
+
             node_index = np.argsort(node_latencys)[-1]
             layer = list(partition.nodes())[node_index]
             node_hw = partition.nodes[layer]["hw"]
@@ -109,13 +109,13 @@ class RuleBased:
                     if chosen:
                         self.network = network
                     
-                    # log the current resources and latency
-                    new_latency = self.network.eval_latency()
+                    # log the current resources and cost
+                    new_cost = self.network.eval_cost()
                     new_resource = self.network.partitions[partition_index].eval_resource()
 
                     # update the log
                     log += [[
-                            new_latency,
+                            new_cost,
                             new_resource["BRAM"],
                             new_resource["DSP"],
                             new_resource["LUT"],
@@ -131,15 +131,20 @@ class RuleBased:
                 try_merge_prev = True
                 try_merge_next = True
 
-        self.network.partitions[partition_index].try_merge_prev = try_merge_prev  
-        self.network.partitions[partition_index].try_merge_next = try_merge_next  
+        partition = self.network.partitions[partition_index]
+        if partition.eval_latency()/partition.freq < partition.platform["reconf_time"]:
+            partition.try_merge_prev = True
+            partition.try_merge_next = True
+        else:
+            partition.try_merge_prev = try_merge_prev  
+            partition.try_merge_next = try_merge_next  
 
         # write log to a file
         with open("outputs/log_{}.csv".format(partition_index), "w") as f:
             writer = csv.writer(f)
             [ writer.writerow(row) for row in log ]
 
-        self.network.partitions[partition_index].summary()
+        partition.summary()
 
         return True
 
@@ -149,7 +154,7 @@ class RuleBased:
 
         while True:
             partitions = copy.deepcopy(self.network.partitions)
-            latency = self.network.eval_latency()
+            cost = self.network.eval_cost()
 
             merge_prev_candidates = []
             merge_next_candidates = []
@@ -181,7 +186,7 @@ class RuleBased:
             self.network.merge(merge_pair)
             status = self.optimise_single_partition(merge_pair[0])
 
-            if not status or self.network.eval_latency() >= latency:
+            if not status or self.network.eval_cost() >= cost:
                 self.network.partitions = partitions
                 reject_list.append(merge_pair)
                 print("reject")
