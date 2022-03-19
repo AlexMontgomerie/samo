@@ -2,6 +2,7 @@ import argparse
 import importlib
 import json
 import copy
+import time
 
 from optimiser.annealing import SimulatedAnnealing
 from optimiser.rule import RuleBased
@@ -58,6 +59,8 @@ def main():
         return
     else:
         raise NameError
+
+    opt.start_time = time.time()
 
     # split up the network completely
     can_split = args.optimiser != "brute"

@@ -4,6 +4,8 @@ import itertools
 from dataclasses import dataclass, field
 import numpy as np
 from tqdm import tqdm
+import time
+import os
 
 from .network import Network
 
@@ -111,19 +113,21 @@ class RuleBased:
                     
                     # log the current resources and cost
                     new_cost = self.network.eval_cost()
-                    new_resource = self.network.partitions[partition_index].eval_resource()
+                    #new_resource = self.network.partitions[partition_index].eval_resource()
 
                     # update the log
-                    log += [[
-                            new_cost,
-                            new_resource["BRAM"],
-                            new_resource["DSP"],
-                            new_resource["LUT"],
-                            new_resource["FF"],
-                            chosen,
-                            layer,
-                            config
-                    ]]
+                    if chosen:
+                        log += [[
+                                time.time()-self.start_time,
+                                new_cost,
+                                #new_resource["BRAM"],
+                                #new_resource["DSP"],
+                                #new_resource["LUT"],
+                                #new_resource["FF"],
+                                #chosen,
+                                #layer,
+                                #config
+                        ]]
 
                     chosen = False
             else:
@@ -140,7 +144,8 @@ class RuleBased:
             partition.try_merge_next = try_merge_next  
 
         # write log to a file
-        with open("outputs/log_{}.csv".format(partition_index), "w") as f:
+        with open("outputs/log.csv".format(partition_index), "a") as f:
+
             writer = csv.writer(f)
             [ writer.writerow(row) for row in log ]
 
@@ -198,6 +203,9 @@ class RuleBased:
 
             print("*******")
     def optimise(self):
+        if os.path.exists("outputs/log.csv"):
+            os.remove("outputs/log.csv")
+
         for partition_index in range(len(self.network.partitions)):
             self.optimise_single_partition(partition_index)
 

@@ -4,6 +4,7 @@ import copy
 import random
 from dataclasses import dataclass, field
 import numpy as np
+import time
 from tqdm import tqdm
 
 from .network import Network
@@ -116,14 +117,15 @@ class SimulatedAnnealing:
             self.T *= self.cool
 
             # # update the log
-            # log += [[
-            #         new_latency,
-            #         new_resource["BRAM"],
-            #         new_resource["DSP"],
-            #         new_resource["LUT"],
-            #         new_resource["FF"],
-            #         chosen
-            # ]]
+            if chosen:
+                log += [[
+                        time.time()-self.start_time,
+                        new_cost,
+                        #new_resource["BRAM"],
+                        #new_resource["DSP"],
+                        #new_resource["LUT"],
+                        #new_resource["FF"],
+                ]]
 
         # write log to a file
         with open("outputs/log.csv", "w") as f:

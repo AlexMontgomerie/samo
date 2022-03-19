@@ -49,8 +49,8 @@ class Network:
         print(f"Network Summary:\n------------\n")
         print(f"Objective: {self.objective}")
         print(f"Batch Size: {self.batch_size} (img/batch)")
-        print(f"Total Latency: {self.eval_latency()} (ms/batch)")
-        print(f"Total Throughput: {self.eval_throughput()} (img/ms)")
+        print(f"Total Latency: {self.eval_latency()} (us/batch)")
+        print(f"Total Throughput: {self.eval_throughput()} (img/us)")
         print("\n")
 
     def split(self, partition_index, nodes):
