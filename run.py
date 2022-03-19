@@ -71,8 +71,9 @@ def main():
             network_copy = copy.deepcopy(opt.network)
             if valid_splits:
                 can_split = True
+                prev = opt.network.check_constraints()
                 opt.network.split(i, valid_splits[0])
-                if not opt.network.check_constraints():
+                if prev and not opt.network.check_constraints():
                     can_split = False
                     opt.network = network_copy
 
