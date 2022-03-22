@@ -8,6 +8,9 @@ from optimiser.annealing import SimulatedAnnealing
 from optimiser.rule import RuleBased
 from optimiser.brute import BruteForce
 
+import random
+import numpy as np
+
 def main():
     # parse arguments
     parser = argparse.ArgumentParser(description="SAME CNN optimiser")
@@ -22,7 +25,9 @@ def main():
     parser.add_argument("--optimiser", choices=["brute", "annealing", "init", "rule"], required=False, default="annealing",
             help="optimiser to use")
     parser.add_argument('--objective', choices=['throughput','latency'], required=False, default="latency", help='Optimiser objective')
-    parser.add_argument("--enable_reconf", choices=["true", "false"], required=False, default="false", help="multiple partitions")
+    parser.add_argument("--enable_reconf", choices=["true", "false"], required=False, default="true", help="multiple partitions")
+    parser.add_argument('--seed', metavar='N', type=int, default=random.randint(0,2**32-1),
+        help='Seed for the optimiser run')
 
     args = parser.parse_args()
 
@@ -41,6 +46,10 @@ def main():
 
     graph.enable_reconf = {"true":True, "false":False}[args.enable_reconf]
     graph.objective = args.objective
+
+    print("SEED: ", args.seed)
+    random.seed(args.seed)
+    np.random.seed(args.seed)
 
     # init
     for partition in graph.partitions:
