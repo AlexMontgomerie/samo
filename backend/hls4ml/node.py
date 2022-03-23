@@ -50,11 +50,14 @@ class HLS4MLNodeWrapper(Node):
                 self._valid_kernel_folding.append(rf)
 
         # start with the smallest design
-        if self.layer_type in [Conv1D, Conv2D, Dense]:
-            self.kernel_folding = self._valid_kernel_folding[-1]
+        #if self.layer_type in [Conv1D, Conv2D, Dense]:
+        #    self.kernel_folding = self._valid_kernel_folding[-1]
+        self.kernel_folding = 1
 
     def get_reuse_factor(self):
-        return self.kernel_folding
+        # return self.kernel_folding
+        return int(self.channels_in*self.channels_out*\
+                self.kernel_size*self.kernel_size/self.kernel_folding)
 
     @property
     def valid_channel_in_folding(self):
@@ -73,7 +76,8 @@ class HLS4MLNodeWrapper(Node):
 
     def resource(self):
         if self.layer_type in [Conv1D, Conv2D, Dense]:
-             dsp_usage = int(self.channels_in*self.channels_out*self.kernel_size*self.kernel_size/self.get_reuse_factor())
+             #dsp_usage = int(self.channels_in*self.channels_out*self.kernel_size*self.kernel_size/self.get_reuse_factor())
+             dsp_usage = self.kernel_folding
         else:
             dsp_usage = 0
         return {
