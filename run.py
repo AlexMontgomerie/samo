@@ -33,6 +33,18 @@ def main():
 
     batch_size = 256 if args.objective == 'throughput' else 1
 
+    # print the run setting
+    print("#### ( run settings ) ####")
+    print(f" * model    : {args.model}")
+    print(f" * backend  : {args.backend}")
+    print(f" * platform : {args.platform}")
+    print(f" * optimiser : {args.optimiser}")
+    print(f" * objective : {args.objective}")
+    print(f" * enable_reconf : {args.enable_reconf}")
+    print(f" * seed : {args.seed}")
+    print(f" * output_path : {args.output_path}")
+    print("##########################")
+
     # parse the platform
     with open(args.platform, "r") as f:
         platform = json.load(f)
@@ -47,7 +59,6 @@ def main():
     graph.enable_reconf = {"true":True, "false":False}[args.enable_reconf]
     graph.objective = args.objective
 
-    print("SEED: ", args.seed)
     random.seed(args.seed)
     np.random.seed(args.seed)
 
@@ -87,13 +98,13 @@ def main():
                     opt.network = network_copy
 
     # validate generated design
-    assert(opt.network.check_constraints())
+    assert opt.network.check_constraints(), "Intial design infeasible!"
 
     # run the optimiser
     # opt.optimise()
 
     # validate generated design
-    assert(opt.network.check_constraints())
+    assert opt.network.check_constraints(), "Optimised design infeasible!"
 
     # print a summary of the run
     opt.network.summary()
