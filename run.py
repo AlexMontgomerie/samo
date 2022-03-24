@@ -28,10 +28,15 @@ def main():
     parser.add_argument("--enable_reconf", choices=["true", "false"], required=False, default="true", help="multiple partitions")
     parser.add_argument('--seed', metavar='N', type=int, default=random.randint(0,2**32-1),
         help='Seed for the optimiser run')
+    parser.add_argument('--batch-size', metavar='N', type=int, default=256,
+        help='batch size')
 
     args = parser.parse_args()
 
-    batch_size = 256 if args.objective == 'throughput' else 1
+    # get the batch size
+    batch_size = args.batch_size
+    if args.objective == "latency":
+        batch_size = 1
 
     # print the run setting
     print("#### ( run settings ) ####")
@@ -40,6 +45,7 @@ def main():
     print(f" * platform : {args.platform}")
     print(f" * optimiser : {args.optimiser}")
     print(f" * objective : {args.objective}")
+    print(f" * batch size : {args.batch_size}")
     print(f" * enable_reconf : {args.enable_reconf}")
     print(f" * seed : {args.seed}")
     print(f" * output_path : {args.output_path}")
