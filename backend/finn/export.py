@@ -8,8 +8,8 @@ def export(network, model_path, output_path):
 
     model = ModelWrapper(model_path)
 
-    for i, finn_node in enumerate(model.graph.node):
-        node = list(network.partitions[0].nodes())[i]
+    for finn_node in model.graph.node:
+        node = finn_node.name
         layer = network.partitions[0].nodes[node]["hw"]
         finn_node = getCustomOp(finn_node)
 

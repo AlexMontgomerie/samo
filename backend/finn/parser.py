@@ -10,10 +10,14 @@ import json
 
 def generate_finn_config(model_path, platform, freq, wordlength, batch_size):
 
-    model_zoo = ["simple","lenet","tfc","sfc","lfc","mpcnn","mobilenetv1","cnv"]
+    model_zoo = ["simple","lenet","tfc","sfc","lfc","mpcnn","mobilenetv1","cnv","resnet50"]
+
+    bFound = False
     for model_name in model_zoo:
         if model_name+"_pre_optimiser" in model_path:
+            bFound = True
             break
+    assert bFound
 
     config = {
         "model_name" : model_name,
