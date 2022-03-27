@@ -3,7 +3,10 @@ from optimiser import Node
 
 class FPGAConvNetWrapper(Node):
 
-    def __init__(self, layer: Layer):
+    def __init__(self, layer: Layer, batch_size=1):
+
+        # store the batch size
+        self.batch_size = batch_size
 
         # store the fpgaconvnet layer
         self.layer = layer
@@ -32,7 +35,7 @@ class FPGAConvNetWrapper(Node):
             self.layer.fine = self.kernel_folding
 
     def latency(self):
-        return self.layer.latency()
+        return self.layer.latency()*self.batch_size
 
     def resource(self):
         return self.layer.resource()

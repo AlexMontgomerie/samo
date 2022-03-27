@@ -107,7 +107,6 @@ class Network:
         self.partitions[partitions[0]].platform = p0.platform
         self.partitions[partitions[0]].constraints = p0.constraints
 
-
     def valid_merges(self):
         # NOTE assuming partitions are sequential
         merges = []

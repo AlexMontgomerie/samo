@@ -14,7 +14,7 @@ def parse(filepath, platform, batch_size):
     reference.platform = platform
     prev_node = None
     for node in graph.nodes:
-        new_node = FPGAConvNetWrapper(graph.nodes[node]["hw"])
+        new_node = FPGAConvNetWrapper(graph.nodes[node]["hw"], batch_size=batch_size)
         reference.add_node(node, hw=new_node)
         # add edge to graph
         if prev_node != None:
