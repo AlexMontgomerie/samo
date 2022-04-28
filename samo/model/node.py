@@ -8,6 +8,8 @@ def get_factors(n):
 
 @dataclass
 class Node:
+    size_in: int
+    size_out: int
     channels_in: int
     channels_out: int
     kernel_size: int = 1
@@ -21,15 +23,15 @@ class Node:
 
     @property
     def valid_channel_in_folding(self):
-        return get_factors(self.channels_in)
+        return sorted(get_factors(self.channels_in))
 
     @property
     def valid_channel_out_folding(self):
-        return get_factors(self.channels_out)
+        return sorted(get_factors(self.channels_out))
 
     @property
     def valid_kernel_folding(self):
-        return get_factors(self.kernel_size*self.kernel_size)
+        return sorted(get_factors(self.kernel_size*self.kernel_size))
 
     def check_matching_intra_folding(self):
         assert self.channel_in_folding == self.channel_out_folding
@@ -45,7 +47,7 @@ class Node:
         # ensure all constraints are held
         return reduce(lambda a, b: a and b, constraints)
 
-    def update(self):
+    def update(self, hw_update=False):
         pass
 
     def latency(self):
@@ -59,4 +61,10 @@ class Node:
              "FF" : 0
         }
 
+    def reset(self):
+        self.channel_in_folding = 1
+        self.channel_out_folding = 1
+        self.kernel_folding = 1
+
+        self.update(hw_update=True)
 

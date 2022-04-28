@@ -1,0 +1,877 @@
+{
+  "FMPadding_Batch_0": {
+    "channel_in_folding": 3,
+    "channel_out_folding": 3,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_0": {
+    "channel_in_folding": 3,
+    "channel_out_folding": 3,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_0": {
+    "channel_in_folding": 3,
+    "channel_out_folding": 64,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_1": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_1": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "Pool_Batch_0": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_0": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_1": {
+    "channel_in_folding": 16,
+    "channel_out_folding": 1,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_2": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_2": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_2": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_3": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_4": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_0": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_0": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_1": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_1": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_2": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_5": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_3": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_3": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_6": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_7": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_1": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_3": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_2": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_4": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_5": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_8": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_4": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_4": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_9": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_10": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_2": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_6": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_7": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_3": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_11": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DownSampler_0": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_12": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_5": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_5": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_13": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_14": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_3": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_8": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_4": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_9": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_10": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_15": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_6": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_6": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_16": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_17": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_4": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_11": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_5": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_12": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_13": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_18": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_7": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_7": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_19": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_20": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_5": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_14": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_6": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_15": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_16": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_21": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_8": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_8": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_22": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_23": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_6": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_17": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_18": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_7": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_24": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DownSampler_1": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_25": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_9": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_9": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_26": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_27": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_7": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_19": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_8": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_20": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_21": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_28": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_10": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_10": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_29": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_30": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_8": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_22": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_9": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_23": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_24": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_31": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_11": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_11": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_32": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_33": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_9": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_25": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_10": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_26": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_27": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_34": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_12": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_12": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_35": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_36": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_10": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_28": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_11": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_29": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_30": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_37": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_13": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_13": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_38": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_39": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_11": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_31": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_12": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_32": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_33": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_40": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_14": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_14": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_41": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_42": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_12": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_34": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "ChannelwiseOp_Batch_0": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_35": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_13": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_43": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DownSampler_2": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_44": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_15": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_15": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_45": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_46": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_13": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_36": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_14": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_37": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_38": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_47": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_16": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_16": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_48": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_49": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_14": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_39": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "DuplicateStreams_Batch_15": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_40": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_41": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_50": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "FMPadding_Batch_17": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_17": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_51": {
+    "channel_in_folding": 64,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_52": {
+    "channel_in_folding": 32,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "AddStreams_Batch_15": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "Thresholding_Batch_42": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "ChannelwiseOp_Batch_1": {
+    "channel_in_folding": 2,
+    "channel_out_folding": 2,
+    "kernel_folding": 1
+  },
+  "ConvolutionInputGenerator_18": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "Pool_Batch_1": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 4,
+    "kernel_folding": 1
+  },
+  "StreamingFCLayer_Batch_53": {
+    "channel_in_folding": 4,
+    "channel_out_folding": 1,
+    "kernel_folding": 1
+  },
+  "ChannelwiseOp_Batch_2": {
+    "channel_in_folding": 1,
+    "channel_out_folding": 1,
+    "kernel_folding": 1
+  },
+  "LabelSelect_Batch_0": {
+    "channel_in_folding": 1,
+    "channel_out_folding": 1,
+    "kernel_folding": 1
+  }
+}
