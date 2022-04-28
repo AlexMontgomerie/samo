@@ -2,4 +2,6 @@ models/
 outputs/
 run.sh
 
+docs/samo/
+
 **/__pycache__/

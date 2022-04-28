@@ -1,12 +1,13 @@
+import os
+import json
+
 from finn.core.modelwrapper import ModelWrapper
 from finn.custom_op.registry import getCustomOp
 
-from .network import FinnNetworkWrapper
-from optimiser import Partition
-from .node import FinnNodeWrapper
+from samo.model import Partition
 
-import os
-import json
+from .network import FinnNetworkWrapper
+from .node import FinnNodeWrapper
 
 def generate_finn_config(model_path, platform, freq, wordlength, batch_size):
 
@@ -70,12 +71,12 @@ def parse(filepath, platform, batch_size):
         reference.add_edge(*edge)
 
     for layer in reference.nodes:
-        if reference.nodes[layer]['hw'].finn_node.onnx_node.op_type == "StreamingFCLayer_Batch" and reference.out_degree(layer) > 0: 
+        if reference.nodes[layer]['hw'].finn_node.onnx_node.op_type == "StreamingFCLayer_Batch" and reference.out_degree(layer) > 0:
             next_node = list(reference.successors(layer))[0]
             if reference.nodes[next_node]['hw'].finn_node.onnx_node.op_type == "AddStreams_Batch":
                 for prev_node in reference.predecessors(next_node):
                     reference.nodes[prev_node]['hw'].constraints["matching_inter_folding"] = True
-                
+
 
     # create network from reference design
     network = FinnNetworkWrapper(reference)

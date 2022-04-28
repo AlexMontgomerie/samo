@@ -18,23 +18,44 @@ class Network:
         self.partitions = [copy.deepcopy(reference)]
         self.enable_reconf = True
 
-    def eval_latency(self):
+    def eval_latency(self) -> float:
         """
-        returns in microseconds
+        Returns
+        -------
+        float
+            latency of the network in microseconds
         """
         return sum([ partition.eval_latency()/partition.freq for partition in self.partitions ]) + \
                 sum([ partition.platform["reconf_time"] for partition in self.partitions[:-1] ])
 
     def eval_throughput(self):
+        """
+        Returns
+        -------
+        float
+            throughput of the network in mega-samples per second
+        """
         return float(self.batch_size)/self.eval_latency()
 
     def eval_cost(self):
+        """
+        Returns
+        -------
+        float
+            evaluates either throughput or latency based on the
+            objective set by the optimisation method
+        """
         if self.objective == "throughput":
             return -self.eval_throughput()
         elif self.objective == "latency":
             return self.eval_latency()
 
     def check_constraints(self):
+        """
+        checks all the constraints on the network. This includes:
+        - all partition constraints
+        - partitions are all a subset of the reference network
+        """
         # check the partitions make up reference design
         # TODO
         # check constraints of all partitions
@@ -42,6 +63,10 @@ class Network:
                 [ partition.check_constraints() for partition in self.partitions ])
 
     def summary(self):
+        """
+        prints out a string to the console giving the current state
+        of the network in terms of performance and parameters.
+        """
         # print the summary for each partition
         for index, partition in enumerate(self.partitions):
             print(f"Partition {index}:\n------------\n")
@@ -54,6 +79,13 @@ class Network:
         print("\n")
 
     def split(self, partition_index, nodes):
+        """
+        method to perform splits on a given partition in the network.
+        The `nodes` in the partition chosen by `partition_index` is
+        where the split occurs. The `nodes` must be adjacent for the
+        split to happen. This creates two seperate partitions in the
+        partition list.
+        """
         # get the node indices
         n0 = nodes[0]
         n1 = nodes[1]
@@ -85,6 +117,11 @@ class Network:
         self.partitions.insert(partition_index, p0)
 
     def valid_splits(self, partition_index):
+        """
+        method to return all valid splits on the partition given
+        by `partition_index`. This is a list of pairs of adjacent
+        nodes.
+        """
         if self.enable_reconf:
             return list(self.partitions[partition_index].edges)
         else:

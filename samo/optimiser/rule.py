@@ -7,7 +7,7 @@ from tqdm import tqdm
 import time
 import os
 
-from .network import Network
+from samo.model import Network
 
 @dataclass
 class RuleBased:
