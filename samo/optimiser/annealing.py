@@ -7,15 +7,15 @@ import numpy as np
 import time
 from tqdm import tqdm
 
-from .network import Network
+from samo.model import Network
 
 @dataclass
 class SimulatedAnnealing:
     network: Network
     T: float = 10.0
     k: float = 100.0
-    T_min: float = 0.0001
-    cool: float = 0.99
+    T_min: float = 0.001
+    cool: float = 0.995
     iterations: int = 10
     valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 

@@ -1,8 +1,11 @@
-import fpgaconvnet_optimiser.tools.parser as parser
-from .node import FPGAConvNetWrapper
-from optimiser import Network
-from optimiser import Partition
 import copy
+
+import fpgaconvnet_optimiser.tools.parser as parser
+
+from samo.model import Network
+from samo.model import Partition
+
+from .node import FPGAConvNetWrapper
 
 def parse(filepath, platform, batch_size):
 

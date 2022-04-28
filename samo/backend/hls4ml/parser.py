@@ -2,8 +2,8 @@ import copy
 import hls4ml
 from tensorflow import keras
 
-from optimiser import Network
-from optimiser import Partition
+from samo.model import Network
+from samo.model import Partition
 
 from .node import HLS4MLNodeWrapper
 from .network import HLS4MLNetworkWrapper

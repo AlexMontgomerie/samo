@@ -1,7 +1,8 @@
+import numpy as np
+
 from finn.util.basic import get_by_name
 
-from optimiser import Node
-import numpy as np
+from samo.model import Node
 
 class FinnNodeWrapper(Node):
     def __init__(self, finn_node, size_in, size_out):
@@ -13,7 +14,7 @@ class FinnNodeWrapper(Node):
         self.channels_out = size_out[-1]
 
         self.size_in = np.prod(size_in)
-        self.size_out = np.prod(size_out)        
+        self.size_out = np.prod(size_out)
 
         # set the matching folding constraint
         self.constraints = { "matching_intra_folding" : finn_node.onnx_node.op_type not in ["StreamingFCLayer_Batch"],

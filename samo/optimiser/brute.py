@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import numpy as np
 from tqdm import tqdm
 
-from .network import Network
+from samo.model.network import Network
 
 @dataclass
 class BruteForce:
@@ -30,7 +30,7 @@ class BruteForce:
                         for next_node in partition.successors(layers[index]):
                             self.network.split(partition_index, (layers[index], next_node))
             index += 1
-        
+
 
     def optimise(self):
         assert len(self.network.partitions) == 1
@@ -56,7 +56,18 @@ class BruteForce:
             configurations.append(layer_configurations)
             size *= len(layer_configurations)
         configurations = itertools.product(*configurations)
+
         print(f"full configuration space size : {size}")
+
+        for i, layer in enumerate(tqdm(self.network, desc="collecting inter folding matching configurations")):
+            if self.network.nodes[layer]["hw"].constraints["matching_inter_folding"] and self.network.out_degree(layer) > 0:
+                configurations = filter(lambda x,i=i: x[i][1] == x[i+1][0], configurations)
+            if self.network.nodes[layer]["hw"].constraints["divisible_inter_folding"] and self.network.out_degree(layer) > 0:
+                configurations = filter(lambda x,i=i: max(x[i][1], x[i+1][0]) % min(x[i][1], x[i+1][0]) == 0, configurations)
+
+        size = 0
+        for _ in tqdm(copy.deepcopy(configurations), desc="counting space size"):
+            size += 1
 
         network_init = copy.deepcopy(self.network)
 

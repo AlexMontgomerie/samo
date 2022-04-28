@@ -41,13 +41,13 @@ class RuleBased:
                 node_hw.valid_channel_in_folding,
                 node_hw.valid_channel_out_folding,
                 node_hw.valid_kernel_folding))
-            
+
             current_config = [node_hw.channel_in_folding, node_hw.channel_out_folding, node_hw.kernel_folding]
             layer_configurations = list(filter(lambda x: np.prod(x) > np.prod(current_config), layer_configurations))
-            
+
             if node_hw.constraints["matching_intra_folding"]:
                 layer_configurations = list(filter(lambda x: x[0] == x[1], layer_configurations))
-            
+
             layer_configurations = sorted(layer_configurations, key=lambda x: np.prod(x))
 
             # uncomment the following code, faster optimiser but worse performance
@@ -101,16 +101,16 @@ class RuleBased:
                             try_merge_next = True
 
                     self.network = network_copy
-            
+
                 step = len(step_candidates) > 0
 
-                # choose the transformation with minimal resource                
+                # choose the transformation with minimal resource
                 chosen = True
                 sorted_candidates = dict(sorted(step_candidates.items(), key=lambda kv: kv[1].partitions[partition_index].avg_rsc_util()))
                 for config, network in sorted_candidates.items():
                     if chosen:
                         self.network = network
-                    
+
                     # log the current resources and cost
                     new_cost = self.network.eval_cost()
                     #new_resource = self.network.partitions[partition_index].eval_resource()
@@ -140,8 +140,8 @@ class RuleBased:
             partition.try_merge_prev = True
             partition.try_merge_next = True
         else:
-            partition.try_merge_prev = try_merge_prev  
-            partition.try_merge_next = try_merge_next  
+            partition.try_merge_prev = try_merge_prev
+            partition.try_merge_next = try_merge_next
 
         # write log to a file
         with open("outputs/log.csv".format(partition_index), "a") as f:
@@ -178,7 +178,7 @@ class RuleBased:
 
             partition_latencys = [ self.network.partitions[partition_index].eval_latency() for partition_index in merge_total_candidates]
             partition_index    = merge_total_candidates[partition_latencys.index(max(partition_latencys))]
-            
+
             if partition_index in merge_next_candidates:
                 merge_pair = (partition_index, partition_index+1)
             elif partition_index in merge_prev_candidates:

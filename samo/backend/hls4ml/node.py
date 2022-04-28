@@ -2,7 +2,7 @@ import math
 import numpy as np
 
 from hls4ml.model.hls_layers import Layer, Dense, Conv2D, Conv1D
-from optimiser import Node
+from samo.model import Node
 
 def _check_conditions(n_in, n_out, rf):
     # from https://github.com/fastmachinelearning/hls4ml/blob/7f75add50a5acd2a4335bde0ab98c9d4e79e1137/hls4ml/templates/vivado_template.py#L448

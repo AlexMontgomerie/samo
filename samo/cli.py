@@ -4,9 +4,9 @@ import json
 import copy
 import time
 
-from optimiser.annealing import SimulatedAnnealing
-from optimiser.rule import RuleBased
-from optimiser.brute import BruteForce
+from samo.optimiser.annealing import SimulatedAnnealing
+from samo.optimiser.rule import RuleBased
+from samo.optimiser.brute import BruteForce
 
 import random
 import numpy as np
@@ -56,8 +56,8 @@ def main():
         platform = json.load(f)
 
     # get the backend parser and exporter
-    parser = importlib.import_module(f"backend.{args.backend}.parser")
-    exporter = importlib.import_module(f"backend.{args.backend}.export")
+    parser = importlib.import_module(f"samo.backend.{args.backend}.parser")
+    exporter = importlib.import_module(f"samo.backend.{args.backend}.export")
 
     # parse the network
     graph = parser.parse(args.model, platform, batch_size)
