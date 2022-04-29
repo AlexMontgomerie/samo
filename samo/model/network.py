@@ -12,6 +12,9 @@ from networkx.algorithms.dag import descendants
 from .partition import Partition
 
 class Network:
+    """
+
+    """
 
     def __init__(self, reference):
         self.reference = reference
@@ -20,30 +23,21 @@ class Network:
 
     def eval_latency(self) -> float:
         """
-        Returns
-        -------
-        float
-            latency of the network in microseconds
+        latency of the network in microseconds
         """
         return sum([ partition.eval_latency()/partition.freq for partition in self.partitions ]) + \
                 sum([ partition.platform["reconf_time"] for partition in self.partitions[:-1] ])
 
-    def eval_throughput(self):
+    def eval_throughput(self) -> float:
         """
-        Returns
-        -------
-        float
-            throughput of the network in mega-samples per second
+        throughput of the network in mega-samples per second
         """
         return float(self.batch_size)/self.eval_latency()
 
-    def eval_cost(self):
+    def eval_cost(self) -> float:
         """
-        Returns
-        -------
-        float
-            evaluates either throughput or latency based on the
-            objective set by the optimisation method
+        evaluates either throughput or latency based on the
+        objective set by the optimisation method
         """
         if self.objective == "throughput":
             return -self.eval_throughput()
@@ -53,6 +47,7 @@ class Network:
     def check_constraints(self):
         """
         checks all the constraints on the network. This includes:
+
         - all partition constraints
         - partitions are all a subset of the reference network
         """
@@ -85,6 +80,10 @@ class Network:
         where the split occurs. The `nodes` must be adjacent for the
         split to happen. This creates two seperate partitions in the
         partition list.
+
+        ```
+        self.split(0, (node_0, node_1))
+        ```
         """
         # get the node indices
         n0 = nodes[0]
@@ -128,6 +127,15 @@ class Network:
             return []
 
     def merge(self, partitions):
+        """
+        merges two partitions where the output node is adjacent to
+        the input node of the other. The function excepts a tuple of
+        two partition indices.
+
+        ```
+        self.merge((0,1))
+        ```
+        """
         # get the partitions
         p0 = self.partitions[partitions[0]]
         p1 = self.partitions[partitions[1]]
@@ -145,6 +153,10 @@ class Network:
         self.partitions[partitions[0]].constraints = p0.constraints
 
     def valid_merges(self):
+        """
+        returns all valid merges that exist in the network as a
+        list of tuples of adjacent partition indices.
+        """
         # NOTE assuming partitions are sequential
         merges = []
         for i in range(1,len(self.partitions)):

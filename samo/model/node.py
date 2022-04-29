@@ -1,28 +1,82 @@
 import math
 from functools import reduce
 from dataclasses import dataclass, field
+from typing import List
 
 def get_factors(n):
+    """
+    helper function for returning all the factors of `n`
+    """
     return list(set(reduce(list.__add__,
         ([i, n//i] for i in range(1, int(n**0.5) + 1) if n % i == 0))))
 
 @dataclass
 class Node:
+    """
+    A generalisation of hardware nodes in Streaming Architectures. This class
+    represents the Node described in the paper. Hardware in the backend's
+    parsed network representation is mapped to this class.
+    """
+
     size_in: int
+    """
+    number of words from incoming feature-map into the node
+    """
     size_out: int
+    """
+    number of words from outgoing feature-map from the node
+    """
     channels_in: int
+    """
+    channel dimension of the incoming feature-map
+    """
     channels_out: int
+    """
+    channel dimension of the outgoing feature-map
+    """
     kernel_size: int = 1
+    """
+    kernel dimension of the node. Used to determine the valid kernel folding
+    factors. The default is 1.
+    """
     channel_in_folding: int = 1
+    """
+    channel in folding variable. Defines the level of parallelism across the
+    incoming feature-map's channel dimension.
+    The default is 1.
+    """
     channel_out_folding: int = 1
+    """
+    channel out folding variable. Defines the level of parallelism across the
+    outgoing feature-map's channel dimension.
+    The default is 1.
+    """
     kernel_folding: int = 1
+    """
+    kernel folding variable. This is parallelism across internal operations,
+    defined by kernel size and valid kernel folding.
+    The default is 1.
+    """
     constraints: dict = field(default_factory=lambda: {"matching_intra_folding": True, "matching_inter_folding": False, "divisible_inter_folding": True})
+    """
+    dictionary of constraints on the node. Each key is a description of the
+    constraint, and the value is a Boolean of whether it is to be applied or
+    not.
+    The defaults are:
+    ```
+    {
+        "matching_intra_folding": True,
+        "matching_inter_folding": False,
+        "divisible_inter_folding": True
+    }
+    ```
+    """
 
     def __hash__(self):
         return hash(repr(self))
 
     @property
-    def valid_channel_in_folding(self):
+    def valid_channel_in_folding(self) -> List[int]:
         return sorted(get_factors(self.channels_in))
 
     @property
