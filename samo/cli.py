@@ -3,13 +3,13 @@ import importlib
 import json
 import copy
 import time
+import random
+
+import numpy as np
 
 from samo.optimiser.annealing import SimulatedAnnealing
 from samo.optimiser.rule import RuleBased
 from samo.optimiser.brute import BruteForce
-
-import random
-import numpy as np
 
 def main():
     # parse arguments
@@ -107,7 +107,7 @@ def main():
     assert opt.network.check_constraints(), "Intial design infeasible!"
 
     # run the optimiser
-    # opt.optimise()
+    opt.optimise()
 
     # validate generated design
     assert opt.network.check_constraints(), "Optimised design infeasible!"

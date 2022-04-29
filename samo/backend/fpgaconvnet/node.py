@@ -28,11 +28,13 @@ class FPGAConvNetWrapper(Node):
                              "matching_inter_folding" : False,
                              "divisible_inter_folding" : False}
 
-    def update(self):
+    def update(self, hw_update=False):
         self.layer.coarse_in = self.channel_in_folding
         self.layer.coarse_out = self.channel_out_folding
         if hasattr(self.layer, "fine"):
             self.layer.fine = self.kernel_folding
+        if hw_update:
+            self.layer.update()
 
     def latency(self):
         return self.layer.latency()*self.batch_size
