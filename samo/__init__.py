@@ -1,3 +1,3 @@
 """
-
+.. includes:: README.md
 """
