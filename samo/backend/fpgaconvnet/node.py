@@ -1,4 +1,4 @@
-from fpgaconvnet_optimiser.models.layers import Layer, ConvolutionLayer, InnerProductLayer
+from fpgaconvnet.models.layers import Layer, ConvolutionLayer, InnerProductLayer
 from samo.model import Node
 
 class FPGAConvNetWrapper(Node):

@@ -1,6 +1,6 @@
-from fpgaconvnet_optimiser.models.network.Network import Network
-from fpgaconvnet_optimiser.models.partition.Partition import Partition
-import fpgaconvnet_optimiser.tools.graphs as graphs
+from fpgaconvnet.models.network.Network import Network
+from fpgaconvnet.models.partition.Partition import Partition
+import fpgaconvnet.tools.graphs as graphs
 
 def export(network, model_path, output_path):
 
