@@ -109,7 +109,7 @@ class SimulatedAnnealing:
             chosen = True
 
             # perform the annealing descision
-            if math.exp(min(0,(latency - new_latency)/(self.k*self.T))) < random.uniform(0,1):
+            if math.exp(min(0,(cost - new_cost)/(self.k*self.T))) < random.uniform(0,1):
                 self.network = network_copy
                 chosen = False
 
