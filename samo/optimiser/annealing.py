@@ -92,18 +92,13 @@ class SimulatedAnnealing:
             # update the network
             self.update()
 
-            # for partition in self.network.partitions:
-            #     print(partition.eval_latency(), partition.eval_resource())
-
             # check the network is within platform resource constraints
             if not self.network.check_constraints():
                 self.network = network_copy
                 continue
 
-
             # log the current resources and cost
             new_cost = self.network.eval_cost()
-            # new_resource = self.network.eval_resource()
             chosen = True
 
             # perform the annealing descision
@@ -116,6 +111,7 @@ class SimulatedAnnealing:
 
             # update the log
             if chosen:
+                self.network.update_fpgaconvnet()
                 # save log of resources and performance
                 with open(f"outputs/log/{graph_index}.json", "w") as f:
                     json.dump({
@@ -124,13 +120,7 @@ class SimulatedAnnealing:
                         "resource" : self.network.eval_resource()
                     }, f)
                 # export to fpgaconvnet and save visualisation
-                tmp = exporter.export(self.network, self.network.model_path, "/tmp")
-                tmp.visualise(f"outputs/vis/{graph_index}.dot")
+                self.network.fpgaconvnet_net.visualise(f"outputs/vis/{graph_index}.dot")
 
-            # increment graph index
-            graph_index += 1
-
-        # # write log to a file
-        # with open("outputs/log.csv", "w") as f:
-        #     writer = csv.writer(f)
-        #     [ writer.writerow(row) for row in log ]
+                # increment graph index
+                graph_index += 1

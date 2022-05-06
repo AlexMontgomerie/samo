@@ -11,6 +11,9 @@ from networkx.algorithms.dag import descendants
 
 from .partition import Partition
 
+from fpgaconvnet.models.network.Network import Network as fpgaConvNetNetwork
+from fpgaconvnet.models.partition.Partition import Partition as fpgaConvNetPartition
+
 class Network:
     """
 
@@ -21,6 +24,27 @@ class Network:
         self.reference = reference
         self.partitions = [copy.deepcopy(reference)]
         self.enable_reconf = True
+        # fpgaconvnet_net
+        self.fpgaconvnet_net = fpgaConvNetNetwork("same", model_path)
+
+    def update_fpgaconvnet(self):
+        # set partitions to being empty
+        self.fpgaconvnet_net.partitions = []
+
+        # iterate over partitions
+        for partition_index in range(len(self.partitions)):
+            # get all nodes in partition
+            nodes = list(self.partitions[partition_index].nodes)
+            # get a subgraph of the network and append it to partitions
+            self.fpgaconvnet_net.partitions.append(fpgaConvNetPartition(
+                self.fpgaconvnet_net.graph.subgraph(nodes).copy()))
+            # update nodes in partition
+            for node in nodes:
+                self.fpgaconvnet_net.partitions[-1].graph.nodes[node]["hw"] = \
+                        self.partitions[partition_index].nodes[node]["hw"].layer
+
+        # update the network
+        self.fpgaconvnet_net.update_partitions()
 
     def eval_latency(self) -> float:
         """

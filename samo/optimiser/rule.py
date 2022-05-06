@@ -1,3 +1,4 @@
+import json
 import csv
 import copy
 import itertools
@@ -12,6 +13,7 @@ from samo.model import Network
 @dataclass
 class RuleBased:
     network: Network
+    graph_index: int = 0
 
     def update(self):
         for partition in self.network.partitions:
@@ -117,18 +119,19 @@ class RuleBased:
 
                     # update the log
                     if chosen:
-                        log += [[
-                                time.time()-self.start_time,
-                                new_cost,
-                                #new_resource["BRAM"],
-                                #new_resource["DSP"],
-                                #new_resource["LUT"],
-                                #new_resource["FF"],
-                                #chosen,
-                                #layer,
-                                #config
-                        ]]
+                        self.network.update_fpgaconvnet()
+                        # save log of resources and performance
+                        with open(f"outputs/log/{self.graph_index}.json", "w") as f:
+                            json.dump({
+                                "latency": self.network.eval_latency(),
+                                "throughput": self.network.eval_throughput(),
+                                "resource" : self.network.eval_resource()
+                            }, f)
+                        # export to fpgaconvnet and save visualisation
+                        self.network.fpgaconvnet_net.visualise(f"outputs/vis/{self.graph_index}.dot")
 
+                        # increment graph index
+                        self.graph_index += 1
                     chosen = False
             else:
 
