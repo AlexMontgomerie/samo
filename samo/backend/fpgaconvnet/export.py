@@ -1,5 +1,6 @@
 from fpgaconvnet.models.network.Network import Network
 from fpgaconvnet.models.partition.Partition import Partition
+
 import fpgaconvnet.tools.graphs as graphs
 
 def export(network, model_path, output_path):
@@ -27,3 +28,6 @@ def export(network, model_path, output_path):
 
     # generate the output configuration
     fpgaconvnet_net.save_all_partitions(output_path)
+
+    # return network
+    return fpgaconvnet_net

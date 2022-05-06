@@ -3,11 +3,16 @@ import math
 import copy
 import random
 from dataclasses import dataclass, field
-import numpy as np
 import time
+from datetime import datetime
+import json
+
+import numpy as np
 from tqdm import tqdm
 
 from samo.model import Network
+
+import samo.backend.fpgaconvnet.export as exporter
 
 @dataclass
 class SimulatedAnnealing:
@@ -68,18 +73,11 @@ class SimulatedAnnealing:
 
     def optimise(self):
 
-        def generator():
-            while self.T_min < self.T:
-                yield
-
         log = []
+        graph_index = 0
 
         # keep iterating until we meet the minimum temperature
-        pbar = tqdm(generator())
-        for _ in pbar:
-
-            # update the description
-            pbar.set_description(desc=f"simulated annealing iterations (T={self.T:.3f})")
+        while self.T_min < self.T:
 
             # get the throughput of the current network state
             cost = self.network.eval_cost()
@@ -116,18 +114,23 @@ class SimulatedAnnealing:
             # reduce temperature
             self.T *= self.cool
 
-            # # update the log
+            # update the log
             if chosen:
-                log += [[
-                        time.time()-self.start_time,
-                        new_cost,
-                        #new_resource["BRAM"],
-                        #new_resource["DSP"],
-                        #new_resource["LUT"],
-                        #new_resource["FF"],
-                ]]
+                # save log of resources and performance
+                with open(f"outputs/log/{graph_index}.json", "w") as f:
+                    json.dump({
+                        "latency": self.network.eval_latency(),
+                        "throughput": self.network.eval_throughput(),
+                        "resource" : self.network.eval_resource()
+                    }, f)
+                # export to fpgaconvnet and save visualisation
+                tmp = exporter.export(self.network, self.network.model_path, "/tmp")
+                tmp.visualise(f"outputs/vis/{graph_index}.dot")
 
-        # write log to a file
-        with open("outputs/log.csv", "w") as f:
-            writer = csv.writer(f)
-            [ writer.writerow(row) for row in log ]
+            # increment graph index
+            graph_index += 1
+
+        # # write log to a file
+        # with open("outputs/log.csv", "w") as f:
+        #     writer = csv.writer(f)
+        #     [ writer.writerow(row) for row in log ]

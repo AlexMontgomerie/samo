@@ -16,7 +16,8 @@ class Network:
 
     """
 
-    def __init__(self, reference):
+    def __init__(self, reference, model_path):
+        self.model_path = model_path
         self.reference = reference
         self.partitions = [copy.deepcopy(reference)]
         self.enable_reconf = True
@@ -33,6 +34,18 @@ class Network:
         throughput of the network in mega-samples per second
         """
         return float(self.batch_size)/self.eval_latency()
+
+    def eval_resource(self) -> dict:
+        """
+        max resource usage across partitions
+        """
+        rsc = [ p.eval_resource() for p in self.partitions ]
+        return {
+            "LUT"   : max(rsc, key=lambda x: x["LUT"])["LUT"]/self.partitions[0].platform["resources"]["LUT"]*100,
+            "FF"    : max(rsc, key=lambda x: x["FF"])["FF"]/self.partitions[0].platform["resources"]["FF"]*100,
+            "DSP"   : max(rsc, key=lambda x: x["DSP"])["DSP"]/self.partitions[0].platform["resources"]["DSP"]*100,
+            "BRAM"  : max(rsc, key=lambda x: x["BRAM"])["BRAM"]/self.partitions[0].platform["resources"]["BRAM"]*100
+        }
 
     def eval_cost(self) -> float:
         """

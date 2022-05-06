@@ -25,7 +25,7 @@ def parse(filepath, platform, batch_size):
         prev_node = node
 
     # create network from reference design
-    network = Network(reference)
+    network = Network(reference, filepath)
     network.batch_size = batch_size
 
     # return the wrapped network
