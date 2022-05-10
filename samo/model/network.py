@@ -50,14 +50,15 @@ class Network:
         """
         latency of the network in microseconds
         """
-        return sum([ partition.eval_latency()/partition.freq for partition in self.partitions ]) + \
-                sum([ partition.platform["reconf_time"] for partition in self.partitions[:-1] ])
+        return (sum([ partition.eval_latency()/partition.freq for partition in self.partitions ]) + \
+                sum([ partition.platform["reconf_time"] for partition in self.partitions[:-1] ])) \
+                /1000000
 
     def eval_throughput(self) -> float:
         """
         throughput of the network in mega-samples per second
         """
-        return float(self.batch_size)/self.eval_latency()
+        return (float(self.batch_size)/self.eval_latency())
 
     def eval_resource(self) -> dict:
         """
