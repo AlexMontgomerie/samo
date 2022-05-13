@@ -1,3 +1,35 @@
+"""
+This is the main command-line interface for performing optimisation on a CNN
+model. Example usage is shown below:
+
+```shell
+usage: python -m samo [-h] --model PATH -b {fpgaconvnet,finn,hls4ml} -p PATH
+        -o PATH [--optimiser {brute,annealing,init,rule}]
+        [--objective {throughput,latency}] [--enable_reconf {true,false}]
+        [--seed N] [--batch-size N]
+
+optional arguments:
+  -h, --help            show this help message and exit
+  -m PATH, --model PATH
+                        path to the CNN model that you wish to
+                        optimise (.keras, .onnx)
+  -b {fpgaconvnet,finn,hls4ml}, --backend {fpgaconvnet,finn,hls4ml}
+                        target backend for accelerating the model
+  -p PATH, --platform PATH
+                        hardware platform details (.json)
+  -o PATH, --output-path PATH
+                        output path for the optimised model (.json, .onnx)
+  --optimiser {brute,annealing,init,rule}
+                        optimiser to use
+  --objective {throughput,latency}
+                        Optimiser objective
+  --enable_reconf {true,false}
+                        multiple partitions
+  --seed N              Seed for the optimiser run
+  --batch-size N        batch size
+```
+"""
+
 import argparse
 import importlib
 import json

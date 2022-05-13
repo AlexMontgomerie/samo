@@ -14,6 +14,16 @@ from .partition import Partition
 class Network:
     """
 
+    Attributes
+    ----------
+    reference: Partition
+        reference partition to initialse design and validate the
+        topology with
+    partitions: List[Partition]
+        list of partitions that constitute the network
+    enable_reconf: Bool
+        flag to indicate whether or not to enable reconfiguration
+        (more than one partition)
     """
 
     def __init__(self, reference):
