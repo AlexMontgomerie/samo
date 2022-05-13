@@ -36,6 +36,7 @@ import json
 import copy
 import time
 import random
+import sys
 
 import numpy as np
 
@@ -43,7 +44,7 @@ from samo.optimiser.annealing import SimulatedAnnealing
 from samo.optimiser.rule import RuleBased
 from samo.optimiser.brute import BruteForce
 
-def main():
+def main(args):
     # parse arguments
     parser = argparse.ArgumentParser(description="SAME CNN optimiser")
     parser.add_argument("-m", "--model", metavar="PATH", required=True,
@@ -63,7 +64,7 @@ def main():
     parser.add_argument('--batch-size', metavar='N', type=int, default=256,
         help='batch size')
 
-    args = parser.parse_args()
+    args = parser.parse_args(args)
 
     # get the batch size
     batch_size = args.batch_size
@@ -151,4 +152,4 @@ def main():
     exporter.export(opt.network, args.model, args.output_path)
 
 if __name__ == "__main__":
-    main()
+    main(sys.argv[1:])
