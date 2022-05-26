@@ -4,7 +4,7 @@ The SAMO framework provides a method of optimising the mapping of a Convolutiona
 
 - [FINN](https://github.com/Xilinx/finn)
 - [HLS4ML](https://github.com/fastmachinelearning/hls4ml)
-- [fpgaConvNet](https://github.com/AlexMontgomerie/fpgaconvnet-optimiser)
+- [fpgaconvnet-hls](https://github.com/AlexMontgomerie/fpgaconvnet-hls) and [fpgaconvnet-model](https://github.com/AlexMontgomerie/fpgaconvnet-model)
 
 
 ## Installation
