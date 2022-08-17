@@ -1,5 +1,14 @@
 name: Publish package
-  if: github.event_name == 'push' && startsWith(github.ref, 'refs/heads/main')
-  uses: pypa/gh-action-pypi-publish@release/v1
-  with:
-    password: ${{ secrets.PYPI_API_TOKEN }}
+
+on:
+  push:
+    branchs:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          password: ${{ secrets.PYPI_API_TOKEN }}
