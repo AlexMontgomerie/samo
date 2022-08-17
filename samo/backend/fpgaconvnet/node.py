@@ -1,4 +1,4 @@
-from fpgaconvnet_optimiser.models.layers import Layer, ConvolutionLayer, InnerProductLayer
+from fpgaconvnet.models.layers import Layer, ConvolutionLayer, InnerProductLayer
 from samo.model import Node
 
 class FPGAConvNetWrapper(Node):
@@ -25,8 +25,8 @@ class FPGAConvNetWrapper(Node):
 
         # set the matching folding constraint
         self.constraints = { "matching_intra_folding" : type(layer) not in [ConvolutionLayer, InnerProductLayer],
-                             "matching_inter_folding" : False,
-                             "divisible_inter_folding" : False}
+                             "matching_inter_folding" : True,
+                             "divisible_inter_folding" : True}
 
     def update(self, hw_update=False):
         self.layer.coarse_in = self.channel_in_folding

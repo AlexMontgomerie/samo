@@ -16,7 +16,7 @@ class SimulatedAnnealing:
     k: float = 100.0
     T_min: float = 0.001
     cool: float = 0.995
-    iterations: int = 10
+    iterations: int = 100
     valid_variables: list = field(default_factory=lambda: ["channel_in_folding", "channel_out_folding", "kernel_folding"])
 
     def update(self):
@@ -109,7 +109,7 @@ class SimulatedAnnealing:
             chosen = True
 
             # perform the annealing descision
-            if math.exp(min(0,(latency - new_latency)/(self.k*self.T))) < random.uniform(0,1):
+            if math.exp(min(0,(cost - new_cost)/(self.k*self.T))) < random.uniform(0,1):
                 self.network = network_copy
                 chosen = False
 

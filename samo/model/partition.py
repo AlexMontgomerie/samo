@@ -67,13 +67,13 @@ class Partition(nx.DiGraph):
     def check_constraints(self):
         # check all the constraints (if they are required)
         for node in self.nodes:
-            # print(node, self.nodes[node]["hw"].check_constraints())
             if not self.nodes[node]["hw"].check_constraints():
                 return False
 
             if self.nodes[node]["hw"].constraints["matching_inter_folding"] and self.out_degree(node) > 0:
                 next_node = list(self.successors(node))[0]
-                assert self.check_matching_inter_folding(node, next_node)
+                if not self.check_matching_inter_folding(node, next_node):
+                    return False
 
         # check resource constraints
         resource_check = self.check_resource_constraints() if self.constraints["resource"] else True
@@ -188,9 +188,6 @@ class Partition(nx.DiGraph):
             node_hw.channel_in_folding = node_config["channel_in_folding"]
             node_hw.channel_out_folding = node_config["channel_out_folding"]
             node_hw.kernel_folding = node_config["kernel_folding"]
-
-        #if not self.check_constraints():
-        #    print("Loading a config that may violate constraints")
 
         for node in self.nodes:
             self.nodes[node]["hw"].update(hw_update=True)

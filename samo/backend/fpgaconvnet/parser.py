@@ -1,6 +1,6 @@
 import copy
 
-import fpgaconvnet_optimiser.tools.parser as parser
+import fpgaconvnet.tools.parser as parser
 
 from samo.model import Network
 from samo.model import Partition
