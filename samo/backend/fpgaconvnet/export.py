@@ -5,7 +5,7 @@ import fpgaconvnet.tools.graphs as graphs
 def export(network, model_path, output_path):
 
     # parse the model as a Network
-    fpgaconvnet_net = Network("same", model_path)
+    fpgaconvnet_net = Network("samo", model_path)
 
     # set partitions to being empty
     fpgaconvnet_net.partitions = []
