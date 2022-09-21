@@ -5,7 +5,7 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name="samo",
-    version="0.2.3",
+    version="0.2.4",
     author="Alex Montgomerie, Zhewen Yu",
     author_email="am9215@ic.ac.uk",
     description="Streaming Architecture Mapping Optimiser",
