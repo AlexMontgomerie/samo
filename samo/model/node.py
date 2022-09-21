@@ -1,3 +1,4 @@
+import logging
 import math
 from functools import reduce
 from dataclasses import dataclass, field
@@ -88,21 +89,37 @@ class Node:
         return sorted(get_factors(self.kernel_size*self.kernel_size))
 
     def check_matching_intra_folding(self):
-        assert self.channel_in_folding == self.channel_out_folding
-        return True
+        intra_folding_matching = self.channel_in_folding == self.channel_out_folding
+        if not intra_folding_matching:
+            logging.error(f"{self.channel_in_folding} != {self.channel_out_folding}")
+        return intra_folding_matching
 
     def check_constraints(self):
         # check all the constraints
         constraints = []
-        constraints += [self.check_matching_intra_folding if self.constraints["matching_intra_folding"] else True]
+
+        # intra folding matching
+        if self.constraints["matching_intra_folding"]:
+            logging.info("checking matching intra folding")
+            constraints += [self.check_matching_intra_folding]
+
+        # channel in folding
+        logging.info("checking input channel folding valid")
         constraints += [self.channel_in_folding in self.valid_channel_in_folding]
+
+        # channel out folding
+        logging.info("checking output channel folding valid")
         constraints += [self.channel_out_folding in self.valid_channel_out_folding]
+
+        # kernel folding
+        logging.info("checking kernel folding valid")
         constraints += [self.kernel_folding in self.valid_kernel_folding]
+
         # ensure all constraints are held
         return reduce(lambda a, b: a and b, constraints)
 
     def update(self, hw_update=False):
-        pass
+        pass # to be implemented by backend
 
     def latency(self):
         return 1

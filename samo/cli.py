@@ -30,6 +30,7 @@ optional arguments:
 ```
 """
 
+import logging
 import argparse
 import importlib
 import json
@@ -45,6 +46,10 @@ from samo.optimiser.rule import RuleBased
 from samo.optimiser.brute import BruteForce
 
 def main(args):
+
+    # logging configuration
+    logging.basicConfig(filename='samo.log', filemode='w', level=logging.INFO)
+
     # parse arguments
     parser = argparse.ArgumentParser(description="SAME CNN optimiser")
     parser.add_argument("-m", "--model", metavar="PATH", required=True,
@@ -87,6 +92,7 @@ def main(args):
     # parse the platform
     with open(args.platform, "r") as f:
         platform = json.load(f)
+
 
     # get the backend parser and exporter
     parser = importlib.import_module(f"samo.backend.{args.backend}.parser")

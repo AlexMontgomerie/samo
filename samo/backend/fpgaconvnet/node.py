@@ -1,4 +1,4 @@
-from fpgaconvnet.models.layers import Layer, ConvolutionLayer, InnerProductLayer
+from fpgaconvnet.models.layers import Layer, ConvolutionLayerBase, InnerProductLayer
 from samo.model import Node
 
 class FPGAConvNetWrapper(Node):
@@ -20,11 +20,12 @@ class FPGAConvNetWrapper(Node):
         self.channels_out   = layer.channels_out()
 
         # add the kernel size if it's a convolution layer
-        if type(layer) == ConvolutionLayer:
+        if issubclass(type(layer), ConvolutionLayerBase):
             self.kernel_size = layer.kernel_size[0]
 
         # set the matching folding constraint
-        self.constraints = { "matching_intra_folding" : type(layer) not in [ConvolutionLayer, InnerProductLayer],
+        self.constraints = { "matching_intra_folding" : not issubclass(type(layer),
+            ConvolutionLayerBase) and not isinstance(layer, InnerProductLayer),
                              "matching_inter_folding" : True,
                              "divisible_inter_folding" : True}
 

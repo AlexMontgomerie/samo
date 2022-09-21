@@ -5,3 +5,5 @@ run.sh
 docs/samo/
 
 **/__pycache__/
+
+samo.log

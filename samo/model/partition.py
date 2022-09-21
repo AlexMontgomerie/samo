@@ -1,3 +1,4 @@
+import logging
 from dataclasses import dataclass, field
 from functools import reduce
 from tabulate import tabulate
@@ -59,19 +60,27 @@ class Partition(nx.DiGraph):
         return reduce(lambda a, b: a and b, rsc_constraints)
 
     def check_memory_bandwdith_constraint(self):
-        return (self.eval_throughput_in() + self.eval_throughput_out()) < 1000*float(self.platform["bandwidth"])
+        bandwidth = (self.eval_throughput_in() + self.eval_throughput_out())
+        bandwidth_constraint = bandwidth < 1000*float(self.platform["bandwidth"])
+        logging.info(f"bandwidth {bandwidth} within constriant is {bandwidth_constraint}")
+        return bandwidth_constraint
 
     def check_matching_inter_folding(self, node, next_node):
-        return self.nodes[node]["hw"].channel_out_folding == self.nodes[next_node]["hw"].channel_in_folding
+        inter_folding_matching = self.nodes[node]["hw"].channel_out_folding == self.nodes[next_node]["hw"].channel_in_folding
+        if not inter_folding_matching:
+            logging.warning(f"{node} output channel folding != {next_node} input channel folding")
+        return inter_folding_matching
 
     def check_constraints(self):
         # check all the constraints (if they are required)
         for node in self.nodes:
+            logging.info(f"checking {node} constraints")
             if not self.nodes[node]["hw"].check_constraints():
                 return False
 
             if self.nodes[node]["hw"].constraints["matching_inter_folding"] and self.out_degree(node) > 0:
                 next_node = list(self.successors(node))[0]
+                logging.info(f"checking inter folding constraint between {node} and {next_node}")
                 if not self.check_matching_inter_folding(node, next_node):
                     return False
 
