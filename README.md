@@ -1,6 +1,6 @@
 # SAMO: Streaming Architecture Mapping Optimiser
 
-The SAMO framework provides a method of optimising the mapping of a Convolutional Neural Network model onto an FPGA platform for Streaming Architecture frameworks. Both a Simulated Annealing and Brute Force optimiser are implemented. We currently support the following frameworks:
+The SAMO framework provides a method of optimising the mapping of a Convolutional Neural Network model onto an FPGA platform for Streaming Architecture frameworks. Three optimisation methods: Brute-Force, Simulated Annealing and Rule-Based are implemented. We currently support the following frameworks:
 
 - [FINN](https://github.com/Xilinx/finn)
 - [HLS4ML](https://github.com/fastmachinelearning/hls4ml)
@@ -62,7 +62,7 @@ cd finn
 git checkout 4cc0b6fdae2f5c06f0b5bcc6fa45fba4d8b69111
 ```
 
-As FINN requires docker, set SAMO_DIR to the path of SAMO in run_docker.sh, before entering the docker.
+As FINN requires docker, set SAMO_DIR to the path of SAMO in run-docker.sh, before entering the docker.
 ```
 bash run-docker.sh
 ```
