@@ -64,7 +64,7 @@ git checkout 4cc0b6fdae2f5c06f0b5bcc6fa45fba4d8b69111
 
 As FINN requires docker, set SAMO_DIR to the path of SAMO in run_docker.sh, before entering the docker.
 ```
-bash run_docker.sh
+bash run-docker.sh
 ```
 
 Within the docker, generate the FINN-ONNX through the following steps.
