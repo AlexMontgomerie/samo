@@ -6,7 +6,7 @@ import os
 import hls4ml
 from tensorflow import keras
 
-from backend.hls4ml.parser import parse
+from samo.backend.hls4ml.parser import parse
 
 def main():
 
