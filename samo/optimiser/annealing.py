@@ -1,13 +1,16 @@
+import copy
 import csv
 import math
-import copy
+import os
 import random
-from dataclasses import dataclass, field
-import numpy as np
 import time
+from dataclasses import dataclass, field
+
+import numpy as np
 from tqdm import tqdm
 
 from samo.model import Network
+
 
 @dataclass
 class SimulatedAnnealing:
@@ -127,6 +130,9 @@ class SimulatedAnnealing:
                         #new_resource["FF"],
                 ]]
 
+        # check if outputs directory exists
+        if not os.path.exists("outputs"):
+            os.makedirs("outputs")
         # write log to a file
         with open("outputs/log.csv", "w") as f:
             writer = csv.writer(f)
