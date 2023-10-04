@@ -1,0 +1,14 @@
+{
+  "name" : "zcu106",
+  "part" : "xczu7ev-ffvc1156-2-e",
+  "board" : "xilinx.com:zcu106:part0:2.6",
+  "resources" : {
+    "DSP"  : 1728,
+    "BRAM" : 624,
+    "FF"   : 460800,
+    "LUT"  : 230400,
+    "URAM" : 96
+  },
+  "bandwidth" : 135.83,
+  "reconf_time" : 82550
+}
