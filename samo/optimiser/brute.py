@@ -1,11 +1,13 @@
-import logging
-import itertools
 import copy
+import itertools
+import logging
 from dataclasses import dataclass
+
 import numpy as np
 from tqdm import tqdm
 
 from samo.model.network import Network
+
 
 @dataclass
 class BruteForce:
@@ -60,10 +62,10 @@ class BruteForce:
 
         print(f"full configuration space size : {size}")
 
-        for i, layer in enumerate(tqdm(self.network, desc="collecting inter folding matching configurations")):
-            if self.network.nodes[layer]["hw"].constraints["matching_inter_folding"] and self.network.out_degree(layer) > 0:
+        for i, layer in enumerate(tqdm(self.network.partitions[0], desc="collecting inter folding matching configurations")):
+            if self.network.partitions[0].nodes[layer]["hw"].constraints["matching_inter_folding"] and self.network.partitions[0].out_degree(layer) > 0:
                 configurations = filter(lambda x,i=i: x[i][1] == x[i+1][0], configurations)
-            if self.network.nodes[layer]["hw"].constraints["divisible_inter_folding"] and self.network.out_degree(layer) > 0:
+            if self.network.partitions[0].nodes[layer]["hw"].constraints["divisible_inter_folding"] and self.network.partitions[0].out_degree(layer) > 0:
                 configurations = filter(lambda x,i=i: max(x[i][1], x[i+1][0]) % min(x[i][1], x[i+1][0]) == 0, configurations)
 
         size = 0
@@ -87,7 +89,7 @@ class BruteForce:
                 valid_configs[config] = cost
 
         # find the network with the lowest cost
-        best_config = min(valid_configs, key=valid_configs.get_cost)
+        best_config = min(valid_configs, key=valid_configs.get)
 
         # update with the best configuration
         self.network = copy.deepcopy(network_init)
