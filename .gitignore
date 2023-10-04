@@ -8,3 +8,5 @@ docs/samo/
 **.egg-info/
 
 samo.log
+
+.vscode/
